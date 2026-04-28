@@ -1,0 +1,15 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "c:\\unreal projects\\myproject\\source\\myproject\\myactor.cpp",
+        "ProvidedModule": "",
+        "PCH": "c:\\unreal projects\\myproject\\intermediate\\build\\win64\\x64\\myprojecteditor\\development\\unrealed\\sharedpch.unrealed.project.valapi.valexpapi.cpp20.h.pch",
+        "Includes": [
+            "c:\\unreal projects\\myproject\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\myproject\\definitions.myproject.h",
+            "c:\\unreal projects\\myproject\\source\\myproject\\myactor.h",
+            "c:\\unreal projects\\myproject\\intermediate\\build\\win64\\unrealeditor\\inc\\myproject\\uht\\myactor.generated.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}
