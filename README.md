@@ -40,6 +40,22 @@
   - `FVector::Dist`를 활용한 전체 누적 이동 거리 계산
   - 10회 종료 후 **총 이동 거리** 및 **이벤트 발생 횟수**를 요약하여 출력
 
+#### 3️⃣ 코드 최적화 및 리팩토링 (추가 구현)
+- [x] **로그 출력 함수 공통화 (LogPrint)**: 반복되는 로그 출력 코드를 별도의 메서드로 추출하여 중복 제거 및 유지보수성 향상
+  - GEngine->AddOnScreenDebugMessage(화면 출력)와 UE_LOG(콘솔 출력)를 단일 함수에서 처리하도록 구현
+- [x] **시각적 디버깅 강화**: 이동/회전(Red), 이벤트(Green), 최종 리포트(Yellow) 등 상황별로 로그 색상을 다르게 지정하여 디버깅 가독성 극대화
+
+```cpp
+// 로그 출력 함수
+void AMyActor::LogPrint(FColor C, FString S) {
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 30, C, S);
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("%s"), *S);
+}
+```
 ---
 
 ### 📂 폴더 구조
