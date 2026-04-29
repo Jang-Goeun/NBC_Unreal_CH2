@@ -1,15 +1,15 @@
 {
     "Version": "1.2",
     "Data": {
-        "Source": "c:\\unreal projects\\myproject\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\myproject\\module.myproject.gen.cpp",
+        "Source": "c:\\unreal projects\\nbc_ch2\\myproject\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\myproject\\module.myproject.gen.cpp",
         "ProvidedModule": "",
-        "PCH": "c:\\unreal projects\\myproject\\intermediate\\build\\win64\\x64\\myprojecteditor\\development\\unrealed\\sharedpch.unrealed.project.valapi.valexpapi.cpp20.h.pch",
+        "PCH": "c:\\unreal projects\\nbc_ch2\\myproject\\intermediate\\build\\win64\\x64\\myprojecteditor\\development\\unrealed\\sharedpch.unrealed.project.valapi.valexpapi.cpp20.h.pch",
         "Includes": [
-            "c:\\unreal projects\\myproject\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\myproject\\definitions.myproject.h",
-            "c:\\unreal projects\\myproject\\intermediate\\build\\win64\\unrealeditor\\inc\\myproject\\uht\\myactor.gen.cpp",
-            "c:\\unreal projects\\myproject\\source\\myproject\\myactor.h",
-            "c:\\unreal projects\\myproject\\intermediate\\build\\win64\\unrealeditor\\inc\\myproject\\uht\\myactor.generated.h",
-            "c:\\unreal projects\\myproject\\intermediate\\build\\win64\\unrealeditor\\inc\\myproject\\uht\\myproject.init.gen.cpp"
+            "c:\\unreal projects\\nbc_ch2\\myproject\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\myproject\\definitions.myproject.h",
+            "c:\\unreal projects\\nbc_ch2\\myproject\\intermediate\\build\\win64\\unrealeditor\\inc\\myproject\\uht\\myactor.gen.cpp",
+            "c:\\unreal projects\\nbc_ch2\\myproject\\source\\myproject\\myactor.h",
+            "c:\\unreal projects\\nbc_ch2\\myproject\\intermediate\\build\\win64\\unrealeditor\\inc\\myproject\\uht\\myactor.generated.h",
+            "c:\\unreal projects\\nbc_ch2\\myproject\\intermediate\\build\\win64\\unrealeditor\\inc\\myproject\\uht\\myproject.init.gen.cpp"
         ],
         "ImportedModules": [],
         "ImportedHeaderUnits": []

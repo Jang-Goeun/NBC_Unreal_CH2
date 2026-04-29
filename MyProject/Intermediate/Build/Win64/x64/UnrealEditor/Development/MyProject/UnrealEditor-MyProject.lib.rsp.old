@@ -7,6 +7,8 @@
 /IGNORE:4221
 /NODEFAULTLIB
 "C:/Unreal Projects/MyProject/Intermediate/Build/Win64/x64/MyProjectEditor/Development/UnrealEd/SharedPCH.UnrealEd.Project.ValApi.ValExpApi.Cpp20.h.obj"
+"C:/Unreal Projects/MyProject/Intermediate/Build/Win64/x64/UnrealEditor/Development/MyProject/Module.MyProject.gen.cpp.obj"
+"C:/Unreal Projects/MyProject/Intermediate/Build/Win64/x64/UnrealEditor/Development/MyProject/MyActor.cpp.obj"
 "C:/Unreal Projects/MyProject/Intermediate/Build/Win64/x64/UnrealEditor/Development/MyProject/MyProject.cpp.obj"
 "C:/Unreal Projects/MyProject/Intermediate/Build/Win64/x64/UnrealEditor/Development/MyProject/PerModuleInline.gen.cpp.obj"
 "C:/Unreal Projects/MyProject/Intermediate/Build/Win64/x64/UnrealEditor/Development/MyProject/Default.rc2.res"

@@ -36,12 +36,12 @@
 /FUNCTIONPADMIN:6
 /NOIMPLIB
 /NOEXP
-"C:/Unreal Projects/MyProject/Intermediate/Build/Win64/x64/MyProjectEditor/Development/UnrealEd/SharedPCH.UnrealEd.Project.ValApi.ValExpApi.Cpp20.h.obj"
-"C:/Unreal Projects/MyProject/Intermediate/Build/Win64/x64/UnrealEditor/Development/MyProject/Module.MyProject.gen.cpp.obj"
-"C:/Unreal Projects/MyProject/Intermediate/Build/Win64/x64/UnrealEditor/Development/MyProject/MyActor.cpp.obj"
-"C:/Unreal Projects/MyProject/Intermediate/Build/Win64/x64/UnrealEditor/Development/MyProject/MyProject.cpp.obj"
-"C:/Unreal Projects/MyProject/Intermediate/Build/Win64/x64/UnrealEditor/Development/MyProject/PerModuleInline.gen.cpp.obj"
-"C:/Unreal Projects/MyProject/Intermediate/Build/Win64/x64/UnrealEditor/Development/MyProject/Default.rc2.res"
+"C:/Unreal Projects/NBC_CH2/MyProject/Intermediate/Build/Win64/x64/MyProjectEditor/Development/UnrealEd/SharedPCH.UnrealEd.Project.ValApi.ValExpApi.Cpp20.h.obj"
+"C:/Unreal Projects/NBC_CH2/MyProject/Intermediate/Build/Win64/x64/UnrealEditor/Development/MyProject/Module.MyProject.gen.cpp.obj"
+"C:/Unreal Projects/NBC_CH2/MyProject/Intermediate/Build/Win64/x64/UnrealEditor/Development/MyProject/MyProject.cpp.obj"
+"C:/Unreal Projects/NBC_CH2/MyProject/Intermediate/Build/Win64/x64/UnrealEditor/Development/MyProject/PerModuleInline.gen.cpp.obj"
+"C:/Unreal Projects/NBC_CH2/MyProject/Intermediate/Build/Win64/x64/UnrealEditor/Development/MyProject/MyActor.cpp.obj"
+"C:/Unreal Projects/NBC_CH2/MyProject/Intermediate/Build/Win64/x64/UnrealEditor/Development/MyProject/Default.rc2.res"
 "../Intermediate/Build/Win64/x64/UnrealEditor/Development/Engine/UnrealEditor-Engine.lib"
 "../Intermediate/Build/Win64/x64/UnrealEditor/Development/Core/UnrealEditor-Core.lib"
 "../Intermediate/Build/Win64/x64/UnrealEditor/Development/CoreUObject/UnrealEditor-CoreUObject.lib"
@@ -72,6 +72,6 @@
 "synchronization.lib"
 "dwmapi.lib"
 "imm32.lib"
-/OUT:"C:/Unreal Projects/MyProject/Binaries/Win64/UnrealEditor-MyProject.dll"
-/PDB:"C:/Unreal Projects/MyProject/Binaries/Win64/UnrealEditor-MyProject.pdb"
+/OUT:"C:/Unreal Projects/NBC_CH2/MyProject/Binaries/Win64/UnrealEditor-MyProject.dll"
+/PDB:"C:/Unreal Projects/NBC_CH2/MyProject/Binaries/Win64/UnrealEditor-MyProject.pdb"
 /ignore:4078

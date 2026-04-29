@@ -1,12 +1,12 @@
-"C:/Unreal Projects/MyProject/Intermediate/Build/Win64/x64/UnrealEditor/Development/MyProject/Module.MyProject.gen.cpp"
-@"C:/Unreal Projects/MyProject/Intermediate/Build/Win64/x64/UnrealEditor/Development/MyProject/MyProject.Shared.rsp"
-/FI"C:/Unreal Projects/MyProject/Intermediate/Build/Win64/x64/MyProjectEditor/Development/UnrealEd/SharedPCH.UnrealEd.Project.ValApi.ValExpApi.Cpp20.h"
-/FI"C:/Unreal Projects/MyProject/Intermediate/Build/Win64/x64/UnrealEditor/Development/MyProject/Definitions.MyProject.h"
-/Yu"C:/Unreal Projects/MyProject/Intermediate/Build/Win64/x64/MyProjectEditor/Development/UnrealEd/SharedPCH.UnrealEd.Project.ValApi.ValExpApi.Cpp20.h"
-/Fp"C:/Unreal Projects/MyProject/Intermediate/Build/Win64/x64/MyProjectEditor/Development/UnrealEd/SharedPCH.UnrealEd.Project.ValApi.ValExpApi.Cpp20.h.pch"
-/Fo"C:/Unreal Projects/MyProject/Intermediate/Build/Win64/x64/UnrealEditor/Development/MyProject/Module.MyProject.gen.cpp.obj"
-/experimental:log "C:/Unreal Projects/MyProject/Intermediate/Build/Win64/x64/UnrealEditor/Development/MyProject/Module.MyProject.gen.cpp.sarif"
-/sourceDependencies "C:/Unreal Projects/MyProject/Intermediate/Build/Win64/x64/UnrealEditor/Development/MyProject/Module.MyProject.gen.cpp.dep.json"
+"C:/Unreal Projects/NBC_CH2/MyProject/Intermediate/Build/Win64/x64/UnrealEditor/Development/MyProject/Module.MyProject.gen.cpp"
+@"C:/Unreal Projects/NBC_CH2/MyProject/Intermediate/Build/Win64/x64/UnrealEditor/Development/MyProject/MyProject.Shared.rsp"
+/FI"C:/Unreal Projects/NBC_CH2/MyProject/Intermediate/Build/Win64/x64/MyProjectEditor/Development/UnrealEd/SharedPCH.UnrealEd.Project.ValApi.ValExpApi.Cpp20.h"
+/FI"C:/Unreal Projects/NBC_CH2/MyProject/Intermediate/Build/Win64/x64/UnrealEditor/Development/MyProject/Definitions.MyProject.h"
+/Yu"C:/Unreal Projects/NBC_CH2/MyProject/Intermediate/Build/Win64/x64/MyProjectEditor/Development/UnrealEd/SharedPCH.UnrealEd.Project.ValApi.ValExpApi.Cpp20.h"
+/Fp"C:/Unreal Projects/NBC_CH2/MyProject/Intermediate/Build/Win64/x64/MyProjectEditor/Development/UnrealEd/SharedPCH.UnrealEd.Project.ValApi.ValExpApi.Cpp20.h.pch"
+/Fo"C:/Unreal Projects/NBC_CH2/MyProject/Intermediate/Build/Win64/x64/UnrealEditor/Development/MyProject/Module.MyProject.gen.cpp.obj"
+/experimental:log "C:/Unreal Projects/NBC_CH2/MyProject/Intermediate/Build/Win64/x64/UnrealEditor/Development/MyProject/Module.MyProject.gen.cpp.sarif"
+/sourceDependencies "C:/Unreal Projects/NBC_CH2/MyProject/Intermediate/Build/Win64/x64/UnrealEditor/Development/MyProject/Module.MyProject.gen.cpp.dep.json"
 /nologo
 /Oi
 /FC

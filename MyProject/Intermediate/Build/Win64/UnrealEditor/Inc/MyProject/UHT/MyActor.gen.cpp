@@ -101,15 +101,15 @@ AMyActor::~AMyActor() {}
 // ********** End Class AMyActor *******************************************************************
 
 // ********** Begin Registration *******************************************************************
-struct Z_CompiledInDeferFile_FID_Unreal_Projects_MyProject_Source_MyProject_MyActor_h__Script_MyProject_Statics
+struct Z_CompiledInDeferFile_FID_Unreal_Projects_NBC_CH2_MyProject_Source_MyProject_MyActor_h__Script_MyProject_Statics
 {
 	static constexpr FClassRegisterCompiledInInfo ClassInfo[] = {
 		{ Z_Construct_UClass_AMyActor, AMyActor::StaticClass, TEXT("AMyActor"), &Z_Registration_Info_UClass_AMyActor, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(AMyActor), 3450291764U) },
 	};
-}; // Z_CompiledInDeferFile_FID_Unreal_Projects_MyProject_Source_MyProject_MyActor_h__Script_MyProject_Statics 
-static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Unreal_Projects_MyProject_Source_MyProject_MyActor_h__Script_MyProject_3073785164{
+}; // Z_CompiledInDeferFile_FID_Unreal_Projects_NBC_CH2_MyProject_Source_MyProject_MyActor_h__Script_MyProject_Statics 
+static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Unreal_Projects_NBC_CH2_MyProject_Source_MyProject_MyActor_h__Script_MyProject_3073785164{
 	TEXT("/Script/MyProject"),
-	Z_CompiledInDeferFile_FID_Unreal_Projects_MyProject_Source_MyProject_MyActor_h__Script_MyProject_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Unreal_Projects_MyProject_Source_MyProject_MyActor_h__Script_MyProject_Statics::ClassInfo),
+	Z_CompiledInDeferFile_FID_Unreal_Projects_NBC_CH2_MyProject_Source_MyProject_MyActor_h__Script_MyProject_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Unreal_Projects_NBC_CH2_MyProject_Source_MyProject_MyActor_h__Script_MyProject_Statics::ClassInfo),
 	nullptr, 0,
 	nullptr, 0,
 };

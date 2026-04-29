@@ -1,5 +1,15 @@
-[23992:22312:0428/173026.039:WARNING:chrome_main_delegate.cc(745)] This is Chrome version 128.0.6613.138 (not a warning)
-[23992:37224:0428/173026.066:ERROR:google_update_settings.cc(265)] Failed opening key Software\Chromium to set usagestats; result: 5
-[23992:22312:0428/173026.075:WARNING:account_consistency_mode_manager.cc(77)] Desktop Identity Consistency cannot be enabled as no OAuth client ID and client secret have been configured.
-[36752:32960:0428/173028.958:WARNING:frame_impl.cc(430)] virtual CefFrameImpl::SendProcessMessage sent to detached frame 5-60CEE74EF1BCA852635DD0D37408675D will be ignored
-[23992:22312:0428/173036.185:WARNING:pref_notifier_impl.cc(41)] Pref observer for media_router.cast_allow_all_ips found at shutdown.
+[13724:44672:0429/105902.912:WARNING:chrome_main_delegate.cc(745)] This is Chrome version 128.0.6613.138 (not a warning)
+[13724:15676:0429/105902.942:ERROR:google_update_settings.cc(265)] Failed opening key Software\Chromium to set usagestats; result: 5
+[13724:44672:0429/105902.953:WARNING:account_consistency_mode_manager.cc(77)] Desktop Identity Consistency cannot be enabled as no OAuth client ID and client secret have been configured.
+[36592:24028:0429/105904.389:WARNING:chrome_main_delegate.cc(745)] This is Chrome version 128.0.6613.138 (not a warning)
+[36592:20120:0429/105904.421:ERROR:google_update_settings.cc(265)] Failed opening key Software\Chromium to set usagestats; result: 5
+[36592:24028:0429/105904.438:WARNING:account_consistency_mode_manager.cc(77)] Desktop Identity Consistency cannot be enabled as no OAuth client ID and client secret have been configured.
+[40992:24060:0429/105905.346:WARNING:backend_impl.cc(1764)] Destroying invalid entry.
+[40992:24060:0429/105905.346:ERROR:backend_impl.cc(989)] Critical error found -8
+[40992:24060:0429/105905.582:WARNING:storage_block-inl.h(138)] Failed data load.
+[40992:24060:0429/105905.582:WARNING:storage_block-inl.h(138)] Failed data load.
+[40992:24060:0429/105905.584:ERROR:entry_impl.cc(955)] Failed to save user data
+[15368:4232:0429/105905.940:WARNING:frame_impl.cc(430)] virtual CefFrameImpl::SendProcessMessage sent to detached frame 5-C84934363032763044E092C442A7A823 will be ignored
+[44300:45396:0429/105908.483:WARNING:frame_impl.cc(430)] virtual CefFrameImpl::SendProcessMessage sent to detached frame 5-6FFC5A51644722DD75B1454C0A834603 will be ignored
+[36592:24028:0429/105928.739:WARNING:pref_notifier_impl.cc(41)] Pref observer for media_router.cast_allow_all_ips found at shutdown.
+[13724:44672:0429/105933.663:WARNING:pref_notifier_impl.cc(41)] Pref observer for media_router.cast_allow_all_ips found at shutdown.
