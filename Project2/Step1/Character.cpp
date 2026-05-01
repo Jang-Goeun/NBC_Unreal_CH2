@@ -86,11 +86,14 @@ int main() {
 		cin >> choice;
 
 		switch (choice) {
-			case 0:	
+			// 0. 게임 시작
+			case 0:											
 				cout << "Starting the game!\n" << endl;
 				isGameStart = true;
 				break;
-			case 1:
+
+			// 1. HP 20 증가
+			case 1:											
 				if (HPPotion == 0)
 					cout << "There is no HP potion." << endl;
 				else {
@@ -99,7 +102,8 @@ int main() {
 				}
 				break;
 
-			case 2:
+			// 2. MP 20 증가
+			case 2:											
 				if (MPPotion == 0)
 					cout << "There is no MP potion." << endl;
 				else {
@@ -108,21 +112,25 @@ int main() {
 				}
 				break;
 
-			case 3:
+			// 3. Attack 2배 증가
+			case 3:											
 				cout << "* Attack power doubled." << endl;
 				stat[2] *= 2;
 				break;
 
-			case 4:
+			// 4. Defense 2배 증가
+			case 4:											
 				cout << "* Defense power doubled." << endl;
 				stat[3] *= 2;
 				break;
 
-			case 5:
+			// 5. 사용자 정보 출력
+			case 5:											
 				printStatus(name, stat);
 				break; 
 
-			default:
+			// 예외. 없는 선택지 선택
+			default:										
 				cout << "You entered an incorrect choice." << endl;
 				break;
 			}
