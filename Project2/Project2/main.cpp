@@ -18,7 +18,27 @@ struct Item {
     void PrintInfo() const { cout << name << " " << "(" << price << "G)" << endl; }
 };
 
-vector<Item> inventory;     // 인벤토리
+// 포션 레시피 재료 정보 구조체
+struct Ingredient {
+    string name;
+    int count;
+};
+
+// 포션 레시피 구조체
+struct PotionRecipe {
+    string name;
+    vector<Ingredient> ingredients;
+
+    void PrintRecipe() const {
+        for (size_t i = 0; i < ingredients.size(); ++i) {
+            cout << ingredients[i].name << " x" << ingredients[i].count;
+            if (i < ingredients.size() - 1) cout << ", ";
+        }
+    }
+};
+
+vector<Item> inventory;                 // 인벤토리
+vector<PotionRecipe> potionRecipe;      // 포션 레시피
 
 // 상태 정보 입력 메서드 
 // - 입력 유효성 검사 진행
@@ -125,50 +145,175 @@ void battleResultPrint(bool battleResult, Monster* monster, Player* player) {
     }
 }
 
-// 메인 메뉴 메서드
-void showMainMenu() {
-    int menuChoice;
-    bool isValidSelection = false;
+// 전체 레시피 출력 메서드
+void ShowAllRecipes() {
+    if (potionRecipe.empty()) {
+        cout << "The recipe book is empty..." << endl << endl;
+        return;
+    }
 
-    cout << "\n=== Main Menu ===" << endl;
-    cout << "1. Enter Dungeon" << endl;
-    cout << "2. Check Inventory" << endl;
-    cout << "0. Quit" << endl << endl;
+    for (auto& r : potionRecipe) {
+        cout << "-> " << r.name << ": ";
+        r.PrintRecipe();
+        cout << endl;
+    }
 
-    cout << "Choice: ";
-    cin >> menuChoice;
+    cout << endl;
+}
 
-    while (!isValidSelection) {
-        switch (menuChoice) {
-            // 게임 종료
+// 이름이 일치하는 레시피 출력 메서드
+void SearchByName(string name) {
+
+    bool found = false;
+
+    for (auto& r : potionRecipe) {
+        if (name == r.name) {
+            cout << "-> " << name << ": ";
+            r.PrintRecipe();
+            cout << endl;
+            found = true;
+            break;
+        }
+    }
+
+    // 찾지 못했을 경우
+    if(!found)
+        cout << "No potion found with that name." << endl;
+
+    cout << endl;
+}
+
+// 키워드 재료를 포함한 레시피 전부 출력 메서드
+void SearchByIngredient(string ingredient) {
+
+    bool found = false;
+    int count = 0;
+
+    for (auto& r : potionRecipe) {
+        for (auto& i : r.ingredients) {
+            if (ingredient == i.name) {
+                cout << "-> " << r.name << " (";
+                r.PrintRecipe();
+                cout << ")" << endl;
+                found = true;
+                count++;
+                break;
+            }
+        }
+    }
+
+    // 찾지 못했을 경우
+    if (!found)
+        cout << "No potion found with that ingredient." << endl;
+    // 찾았을 경우
+    else
+        cout << "Found " << count << " recipes." << endl;
+
+    cout << endl;
+}
+
+// 포션 제작소 메서드
+void showAlchemyWorkshop() {
+    int shopChoice;
+    bool isValidSelection = false; // 0번 선택했을 경우만 True로 변경
+    string searchKeyword;
+
+    cout << "\n=== Potion Shop ===" << endl;
+    cout << "1. Show all recipes" << endl;
+    cout << "2. Search by potion name" << endl;
+    cout << "3. Search by ingredient" << endl;
+    cout << "0. Go back" << endl << endl;
+
+    do {
+        cout << "Choice: ";
+        cin >> shopChoice;
+
+        switch (shopChoice) {
+            // 되돌아가기
             case 0:
-                isValidSelection = !isValidSelection;
+                isValidSelection = true;
                 break;
-            // 던전 입장
+
+            // 전체 레시피 보기
             case 1:
-                isValidSelection = !isValidSelection;
+                cout << "[ Potion Recipes ]" << endl;
+                ShowAllRecipes();
                 break;
 
-            // 인벤토리 확인
+            // 포션 이름으로 검색
             case 2:
-                cout << "[ Inventory (" << inventory.size() << "/ 10) ]" << endl;
-                
-                for (int i = 1; i <= inventory.size(); i++) {
-                    cout << i << ". ";
-                    inventory[i - 1].PrintInfo();
-                }
+                cout << "Search potion name: ";
+                cin >> searchKeyword;
+                SearchByName(searchKeyword);
+                break;
 
-                isValidSelection = !isValidSelection;
+            // 재료로 검색
+            case 3:
+                cout << "Search ingredient: ";
+                cin >> searchKeyword;
+                SearchByIngredient(searchKeyword);
                 break;
 
             // 이외의 숫자 선택
             default:
                 cout << "Invalid choice. Please select again!" << endl;
-                cout << "Choice: ";
-                cin >> menuChoice;
                 break;
         }
-    }
+    } while (!isValidSelection);
+}
+
+// 메인 메뉴 메서드
+void showMainMenu() {
+    int menuChoice;
+    bool isValidSelection = false; // 0번과 1번을 선택했을 경우만 True로 변경
+
+    cout << "\n=== Main Menu ===" << endl;
+    cout << "1. Enter Dungeon" << endl;
+    cout << "2. Check Inventory" << endl;
+    cout << "3. AlchemyWorkshop" << endl;
+    cout << "0. Quit" << endl << endl;
+
+    do {
+        cout << "Choice: ";
+        cin >> menuChoice;
+
+        switch (menuChoice) {
+            // 게임 종료
+            case 0:
+                isValidSelection = true;
+                break;
+            // 던전 입장
+            case 1:
+                isValidSelection = true;
+                break;
+
+            // 인벤토리 확인
+            case 2:
+                cout << "[ Inventory (" << inventory.size() << "/ 10) ]" << endl;
+
+                for (int i = 1; i <= inventory.size(); i++) {
+                    cout << i << ". ";
+                    inventory[i - 1].PrintInfo();
+                }
+                break;
+
+            // 포션 제작소
+            case 3:
+                showAlchemyWorkshop();
+
+                cout << "\n=== Main Menu ===" << endl;
+                cout << "1. Enter Dungeon" << endl;
+                cout << "2. Check Inventory" << endl;
+                cout << "3. AlchemyWorkshop" << endl;
+                cout << "0. Quit" << endl << endl;
+                break;
+
+            // 이외의 숫자 선택
+            default:
+                cout << "Invalid choice. Please select again!" << endl;
+                break;
+        }
+    } while (!isValidSelection);
 }
 
 int main() {
@@ -247,6 +392,31 @@ int main() {
     battleResultPrint(battleResult, monster, player);
 
     // 메인 메뉴 
+    showMainMenu();
+
+    // 레시피 추가 후 레시피 재탐색
+    // 1. 재료 정의
+    Ingredient herb = { "Herb", 1 };
+    Ingredient water = { "Clear Water", 1 };
+    Ingredient berry = { "Berry", 1 };
+
+    // 2. 레시피 생성 및 추가
+    PotionRecipe hpPotion;
+    hpPotion.name = "HPPotion";
+    hpPotion.ingredients.push_back(herb);
+    hpPotion.ingredients.push_back(water);
+
+    PotionRecipe staminaPotion;
+    staminaPotion.name = "StaminaPotion";
+    staminaPotion.ingredients.push_back(herb);
+    staminaPotion.ingredients.push_back(berry);
+
+    // 3. 전체 목록에 저장
+    potionRecipe.push_back(hpPotion);
+    potionRecipe.push_back(staminaPotion);
+
+    // 4. 탐색을 위한 메인 메뉴
+    cout << "\n => Recipe added" << endl;
     showMainMenu();
 
     // 프로그램 종료 전 메모리 해제
