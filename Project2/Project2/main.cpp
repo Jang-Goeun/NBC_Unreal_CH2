@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <vector>
 #include "Player.h"
 #include "Warrior.h" 
 #include "Magician.h" 
@@ -9,6 +10,15 @@
 #include "Slime.h"
 
 using namespace std;
+
+// 인벤토리 구조체
+struct Item {
+    string name;
+    int price; 
+    void PrintInfo() const { cout << name << " " << "(" << price << "G)" << endl; }
+};
+
+vector<Item> inventory;     // 인벤토리
 
 // 상태 정보 입력 메서드 
 // - 입력 유효성 검사 진행
@@ -94,24 +104,70 @@ bool battle(Player* player, Monster* monster) {
 }
 
 // 전투 결과 출력 메서드 
+// 승리 시 결과 출력 후 아이템 저장
 // - battleResult: 전투 결과
 // - Player* player: 플레이어
 // - Monster* monster: 전투 몬스터
 void battleResultPrint(bool battleResult, Monster* monster, Player* player) {
     if (battleResult) {
         cout << "★ Victory!" << endl;
+        cout << "  -> Got: " << monster->getDropItemName() << "!" << endl;
+        cout << "  -> Saved to inventory." << endl << endl;
 
-        if(monster->getDropItemPrice() == 0)                                        // 보상이 아이템일 경우
-            cout << "  -> Got: " << monster->getDropItemName() << "!" << endl;
-        else                                                                        // 보상이 돈일 경우
-            cout << "  -> Got: " << monster->getDropItemPrice() << "!" << endl;
-
-        cout << "  (Will be saved to inventory in the next STEP)" << endl;
+        // 인벤토리에 아이템 추가
+        Item droppedItem = { monster->getDropItemName(), monster->getDropItemPrice() };
+        inventory.push_back(droppedItem);
     }
     else {
         cout << "★ Defeat.." << endl;
         cout << "  -> " << player->getName() << " was attacked by " << monster->getName() << " and died." << endl;
-        cout << "Please try again!" << endl;
+        cout << "Please try again!" << endl << endl;
+    }
+}
+
+// 메인 메뉴 메서드
+void showMainMenu() {
+    int menuChoice;
+    bool isValidSelection = false;
+
+    cout << "\n=== Main Menu ===" << endl;
+    cout << "1. Enter Dungeon" << endl;
+    cout << "2. Check Inventory" << endl;
+    cout << "0. Quit" << endl << endl;
+
+    cout << "Choice: ";
+    cin >> menuChoice;
+
+    while (!isValidSelection) {
+        switch (menuChoice) {
+            // 게임 종료
+            case 0:
+                isValidSelection = !isValidSelection;
+                break;
+            // 던전 입장
+            case 1:
+                isValidSelection = !isValidSelection;
+                break;
+
+            // 인벤토리 확인
+            case 2:
+                cout << "[ Inventory (" << inventory.size() << "/ 10) ]" << endl;
+                
+                for (int i = 1; i <= inventory.size(); i++) {
+                    cout << i << ". ";
+                    inventory[i - 1].PrintInfo();
+                }
+
+                isValidSelection = !isValidSelection;
+                break;
+
+            // 이외의 숫자 선택
+            default:
+                cout << "Invalid choice. Please select again!" << endl;
+                cout << "Choice: ";
+                cin >> menuChoice;
+                break;
+        }
     }
 }
 
@@ -119,7 +175,7 @@ int main() {
     // 변수 선언
     string name;                // 캐릭터 이름
     int stat[4] = { 0 };		// 캐릭터 스탯 { "HP", "MP", "공격력", "방어력" }
-    Player* player = nullptr; 
+    Player* player = nullptr;   // 플레이어  
 
     // 게임 프롤로그 시작 
     cout << "===========================================" << endl;
@@ -184,11 +240,14 @@ int main() {
     player->upgradeCharacter(player);
 
     // 전투 시작(1단계 기본 몬스터 슬라임과 전투)
-    Monster* monster = new Slime("Slime", "Slime Jelly", 0);
+    Monster* monster = new Slime("Slime", "Slime Jelly", 30);
     bool battleResult = battle(player, monster);
 
     // 전투 결과 출력
     battleResultPrint(battleResult, monster, player);
+
+    // 메인 메뉴 
+    showMainMenu();
 
     // 프로그램 종료 전 메모리 해제
     if (player != nullptr) {
