@@ -1,4 +1,5 @@
 #include "Warrior.h"
+#include "Monster.h"
 #include <iostream>
 
 using namespace std;
@@ -7,6 +8,12 @@ using namespace std;
 Warrior::Warrior(string name, int* stat, int level, int hpPotion, int mpPotion) : Player(name, stat, level, hpPotion, mpPotion) {
     this->job = "Warrior";
     this->defense += 30; // 방어력 +30
+}
+
+// attack(Monster* monster) 메서드 구현
+void Warrior::attack(Monster* monster) {
+    cout << "Swings a massive sword with great force!" << endl;
+    cout << power << " damage to " << monster->getName() << endl;
 }
 
 // attack() 메서드 구현
