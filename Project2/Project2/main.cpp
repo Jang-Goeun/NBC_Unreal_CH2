@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <ctime>
 #include "Player.h"
 #include "Warrior.h" 
 #include "Magician.h" 
@@ -262,65 +263,18 @@ void showAlchemyWorkshop() {
     } while (!isValidSelection);
 }
 
-// 메인 메뉴 메서드
-void showMainMenu() {
-    int menuChoice;
-    bool isValidSelection = false; // 0번과 1번을 선택했을 경우만 True로 변경
-
-    cout << "\n=== Main Menu ===" << endl;
-    cout << "1. Enter Dungeon" << endl;
-    cout << "2. Check Inventory" << endl;
-    cout << "3. AlchemyWorkshop" << endl;
-    cout << "0. Quit" << endl << endl;
-
-    do {
-        cout << "Choice: ";
-        cin >> menuChoice;
-
-        switch (menuChoice) {
-            // 게임 종료
-            case 0:
-                isValidSelection = true;
-                break;
-            // 던전 입장
-            case 1:
-                isValidSelection = true;
-                break;
-
-            // 인벤토리 확인
-            case 2:
-                cout << "[ Inventory (" << inventory.size() << "/ 10) ]" << endl;
-
-                for (int i = 1; i <= inventory.size(); i++) {
-                    cout << i << ". ";
-                    inventory[i - 1].PrintInfo();
-                }
-                break;
-
-            // 포션 제작소
-            case 3:
-                showAlchemyWorkshop();
-
-                cout << "\n=== Main Menu ===" << endl;
-                cout << "1. Enter Dungeon" << endl;
-                cout << "2. Check Inventory" << endl;
-                cout << "3. AlchemyWorkshop" << endl;
-                cout << "0. Quit" << endl << endl;
-                break;
-
-            // 이외의 숫자 선택
-            default:
-                cout << "Invalid choice. Please select again!" << endl;
-                break;
-        }
-    } while (!isValidSelection);
-}
 
 int main() {
+    srand((unsigned int)time(NULL));
+
     // 변수 선언
     string name;                // 캐릭터 이름
     int stat[4] = { 0 };		// 캐릭터 스탯 { "HP", "MP", "공격력", "방어력" }
     Player* player = nullptr;   // 플레이어  
+
+    // 레시피 추가 
+    potionRecipe.push_back({ "HPPotion", {{"Herb", 1}, {"Clear Water", 1}} });
+    potionRecipe.push_back({ "StaminaPotion", {{"Herb", 1}, {"Berry", 1}} });
 
     // 게임 프롤로그 시작 
     cout << "===========================================" << endl;
@@ -381,53 +335,74 @@ int main() {
     player->attack();
     player->printPlayerStatus(); 
 
-    // 포션 사용 
-    player->upgradeCharacter(player);
+    // 메인
+    bool isGameOver = false;
 
-    // 전투 시작(1단계 기본 몬스터 슬라임과 전투)
-    Monster* monster = new Slime("Slime", "Slime Jelly", 30);
-    bool battleResult = battle(player, monster);
+    while (!isGameOver) {
+        int menuChoice;
 
-    // 전투 결과 출력
-    battleResultPrint(battleResult, monster, player);
+        cout << "\n\n=== Main Menu ===" << endl;
+        cout << "1. Enter Dungeon" << endl;
+        cout << "2. Check Inventory" << endl;
+        cout << "3. AlchemyWorkshop" << endl;
+        cout << "4. UpgradeCharacter" << endl;
+        cout << "0. Quit" << endl << endl;
 
-    // 메인 메뉴 
-    showMainMenu();
+        cout << "Choice: ";
+        cin >> menuChoice;
 
-    // 레시피 추가 후 레시피 재탐색
-    // 1. 재료 정의
-    Ingredient herb = { "Herb", 1 };
-    Ingredient water = { "Clear Water", 1 };
-    Ingredient berry = { "Berry", 1 };
+        switch (menuChoice) {
+            // 게임 종료
+            case 0: {
+                isGameOver = true;
+                break;
+            }
+            // 던전 입장
+            case 1: {
+                Monster * monster = (rand() % 2 == 0) ? new Slime("Slime", "Slime Jelly", 30) : new Slime("King Slime", "Crown", 100, 60, 40 , 30);
+                battleResultPrint(battle(player, monster), monster, player);
+                delete monster; 
+                if (player->getHp() <= 0) isGameOver = true;
+                break;
+            }
+            // 인벤토리 확인
+            case 2: {
+                cout << "[ Inventory (" << inventory.size() << "/ 10) ]" << endl;
 
-    // 2. 레시피 생성 및 추가
-    PotionRecipe hpPotion;
-    hpPotion.name = "HPPotion";
-    hpPotion.ingredients.push_back(herb);
-    hpPotion.ingredients.push_back(water);
+                for (int i = 1; i <= inventory.size(); i++) {
+                    cout << i << ". ";
+                    inventory[i - 1].PrintInfo();
+                }
+                break;
+            }
+            // 포션 제작소
+            case 3: {
+                showAlchemyWorkshop();
 
-    PotionRecipe staminaPotion;
-    staminaPotion.name = "StaminaPotion";
-    staminaPotion.ingredients.push_back(herb);
-    staminaPotion.ingredients.push_back(berry);
-
-    // 3. 전체 목록에 저장
-    potionRecipe.push_back(hpPotion);
-    potionRecipe.push_back(staminaPotion);
-
-    // 4. 탐색을 위한 메인 메뉴
-    cout << "\n => Recipe added" << endl;
-    showMainMenu();
+                cout << "\n=== Main Menu ===" << endl;
+                cout << "1. Enter Dungeon" << endl;
+                cout << "2. Check Inventory" << endl;
+                cout << "3. AlchemyWorkshop" << endl;
+                cout << "0. Quit" << endl << endl;
+                break;
+            }
+            // 포션 사용
+            case 4: {
+                player->upgradeCharacter(player);
+                break;
+            }
+            // 이외의 숫자 선택
+            default: {
+                cout << "Invalid choice. Please select again!" << endl;
+                break;
+            }
+        }
+    }
 
     // 프로그램 종료 전 메모리 해제
     if (player != nullptr) {
         delete player;
         player = nullptr;
-    }
-
-    if (monster != nullptr) {
-        delete monster;
-        monster = nullptr;
     }
 
     return 0;

@@ -48,7 +48,6 @@ void Player::upgradeCharacter(Player* player) {
         switch (choice) {
             // 0. 게임 시작
         case 0:
-            cout << "Starting the game!\n" << endl;
             isGameStart = true;
             break;
 
