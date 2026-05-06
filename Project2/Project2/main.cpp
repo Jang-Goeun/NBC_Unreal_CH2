@@ -263,6 +263,20 @@ void showAlchemyWorkshop() {
     } while (!isValidSelection);
 }
 
+// 포션 수 변경(도전 과제1)
+// 본인은 객체의 멤버변수로 포션을 저장해두어 해당 함수가 필요 없음
+// 과제 수행을 위해 작성만 해둔 상태
+// 포션 사용은 getter/setter로 진행 중
+// 포인터를 쓰지 않고 매개변수만 넘겼을 때 값이 바뀌지 않는 이유를 설명: 
+// -> 포인터를 사용하지 않으면 매개변수로 값을 넘길 때 값의 복사가 이루어지므로 원본에는 영향을 주지 않음.
+//    따라서 포인터를 안쓰면 매개변수로 넘긴 값을 바꿔도 원본 값이 바뀌지 않음
+/*
+void setPotion(int count, int* p_HPPotion, int* p_MPPotion) {
+    *p_HPPotion = count;
+    *p_MPPotion = count;
+}
+*/
+
 
 int main() {
     srand((unsigned int)time(NULL));
