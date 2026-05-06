@@ -100,7 +100,7 @@ bool battle(Player* player, Monster* monster) {
         cout << endl;
 
         // Monster Turn
-        cout << "--- " << monsterName << " Turn-- - " << endl;
+        cout << "--- " << monsterName << " Turn--- " << endl;
         monster->attack(player);
 
         // 몬스터 공격 데미지 계산
@@ -125,15 +125,34 @@ bool battle(Player* player, Monster* monster) {
 }
 
 // 전투 결과 출력 메서드 
-// 승리 시 결과 출력 후 아이템 저장
+// 승리 시 결과 출력 후 아이템 저장 & exp 증가
 // - battleResult: 전투 결과
 // - Player* player: 플레이어
 // - Monster* monster: 전투 몬스터
 void battleResultPrint(bool battleResult, Monster* monster, Player* player) {
     if (battleResult) {
+        // 결과 출력
         cout << "★ Victory!" << endl;
         cout << "  -> Got: " << monster->getDropItemName() << "!" << endl;
-        cout << "  -> Saved to inventory." << endl << endl;
+        cout << "  -> Saved to inventory." << endl;
+
+        // exp 증가
+        player->setExp(player->getExp() + monster->getExpReward());
+        cout << "  -> +" << monster->getExpReward() << " EXP! (EXP: " << player->getExp() << "/" << player->getMaxExp() << ")" << endl << endl;
+
+        // 레벨업
+        if (player->getExp() >= player->getMaxExp()) {
+            cout << "... Level up condition met" << endl;
+            cout << "  -> Level Up! Lv." << player->getLevel() << " -> Lv.";
+            player->setLevel(player->getLevel() + 1);
+            cout << player->getLevel() << endl;
+            cout << "  -> HP +10, MP +5, Attack +5" << endl << endl;
+
+            player->setHp(player->getHp() + 10);
+            player->setMp(player->getMp() + 5);
+            player->setPower(player->getPower() + 5);
+            player->setExp(player->getExp() - player->getMaxExp());
+        }
 
         // 인벤토리에 아이템 추가
         Item droppedItem = { monster->getDropItemName(), monster->getDropItemPrice() };
@@ -373,7 +392,7 @@ int main() {
             }
             // 던전 입장
             case 1: {
-                Monster * monster = (rand() % 2 == 0) ? new Slime("Slime", "Slime Jelly", 30) : new Slime("King Slime", "Crown", 100, 60, 40 , 30);
+                Monster * monster = (rand() % 2 == 0) ? new Slime("Slime", "Slime Jelly", 30) : new Slime("King Slime", "Crown", 100, 60, 40 , 30, 50);
                 battleResultPrint(battle(player, monster), monster, player);
                 delete monster; 
                 if (player->getHp() <= 0) isGameOver = true;
@@ -402,7 +421,7 @@ int main() {
             }
             // 포션 사용
             case 4: {
-                player->upgradeCharacter(player);
+                player->upgradeCharacter();
                 break;
             }
             // 이외의 숫자 선택

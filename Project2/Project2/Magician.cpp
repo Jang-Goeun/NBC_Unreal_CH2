@@ -5,7 +5,7 @@
 using namespace std;
 
 // 생성자 구현
-Magician::Magician(string name, int* stat, int level, int hpPotion, int mpPotion) : Player(name, stat, level, hpPotion, mpPotion) {
+Magician::Magician(string name, int* stat, int level, int hpPotion, int mpPotion, int exp, int maxExp) : Player(name, stat, level, hpPotion, mpPotion, exp, maxExp) {
     this->job = "Magician";
     this->mp += 30;  // 마나 + 30
 }

@@ -6,11 +6,11 @@ class Player;
 class Monster {
 protected:
 	std::string name, dropItemName;
-	int hp, power, defense, dropItemPrice;
+	int hp, power, defense, dropItemPrice, expReward;
 
 public:
 	// 생성자
-	Monster(std::string name, std::string dropItemName, int dropItemPrice, int hp = 30, int power = 20, int defense = 10);
+	Monster(std::string name, std::string dropItemName, int dropItemPrice, int hp = 30, int power = 20, int defense = 10, int expReward = 30);
 	virtual ~Monster() {}								// 가상 소멸자
 	
 	// getter
@@ -19,7 +19,8 @@ public:
 	int getHp() { return this->hp; }
 	int getPower() { return this->power; }
 	int getDefense() { return this->defense; }
-	int getDropItemPrice() { return this->dropItemPrice; }
+    int getDropItemPrice() { return this->dropItemPrice; }
+    int getExpReward() { return this->expReward; }
 
 	// setter
 	void setName(std::string name) { this->name = name; }
@@ -28,6 +29,7 @@ public:
 	void setPower(int power) { this->power = power; }
 	void setDefense(int defense) { this->defense = defense; }
 	void setDropItemPrice(int dropItemPrice) { this->dropItemPrice = dropItemPrice; }
+    void setExpReward(int expReward) { this->expReward = expReward; }
 
 	virtual void attack(Player* player) = 0;							// 순수 가상 함수(공격)
 };

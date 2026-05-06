@@ -5,7 +5,7 @@
 using namespace std;
 
 // 생성자 구현
-Archer::Archer(string name, int* stat, int level, int hpPotion, int mpPotion) : Player(name, stat, level, hpPotion, mpPotion) {
+Archer::Archer(string name, int* stat, int level, int hpPotion, int mpPotion, int exp, int maxExp) : Player(name, stat, level, hpPotion, mpPotion, exp, maxExp) {
     this->job = "Archer";
     this->power += 30;  // 공격력 + 30
 }
