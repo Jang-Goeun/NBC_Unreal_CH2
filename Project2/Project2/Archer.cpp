@@ -11,12 +11,17 @@ Archer::Archer(string name, int* stat, int level, int hpPotion, int mpPotion, in
 }
 
 // attack(Monster* monster) 메서드 구현
-void Archer::attack(Monster* monster) {
-    cout << "Fires a sharp arrow with deadly precision!" << endl;
-    cout << power << " damage to " << monster->getName() << endl;
+int Archer::attack(Monster* monster) {
+    // 플레이어 공격 데미지 계산
+    int monsterDamage = (power - monster->getDefense()) / 3;
+    monsterDamage = (monsterDamage <= 0) ? 1 : monsterDamage;    // 데미지가 0 이하이면 1로 고정
+
+    cout << "[Archer] Shoots arrow! -> " << monsterDamage << " damage to " << monster->getName() << "! (x3)" << endl;
+
+    return monsterDamage * 3;
 }
 
 // attack() 메서드 구현
 void Archer::attack() {
-    cout << "Fires a sharp arrow with deadly precision!" << endl;
+    cout << "Shoots arrow!" << endl;
 }

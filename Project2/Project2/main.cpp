@@ -81,16 +81,12 @@ bool battle(Player* player, Monster* monster) {
     while (player->getHp() > 0 && monster->getHp() > 0) {
         // Player Turn
         cout << "--- " << playerName << " Turn --- " << endl;
-        player->attack(monster);
+        int monsterDamage = player->attack(monster);
 
-        // 플레이어 공격 데미지 계산
-        int monsterDamage = player->getPower() - monster->getDefense();
-        monsterDamage = (monsterDamage <= 0) ? 1 : monsterDamage;    // 데미지가 0 이하이면 1로 고정
-        
         cout << monsterName << " HP: " << monster->getHp() << " -> ";
         monster->setHp(monster->getHp() - monsterDamage);
         cout << monster->getHp();
-        
+
         // 몬스터 사망
         if (monster->getHp() <= 0) {
             cout << " (Dead)" << endl << endl;

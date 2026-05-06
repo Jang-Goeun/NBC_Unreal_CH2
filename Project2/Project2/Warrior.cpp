@@ -11,12 +11,17 @@ Warrior::Warrior(string name, int* stat, int level, int hpPotion, int mpPotion, 
 }
 
 // attack(Monster* monster) 메서드 구현
-void Warrior::attack(Monster* monster) {
-    cout << "Swings a massive sword with great force!" << endl;
-    cout << power << " damage to " << monster->getName() << endl;
+int Warrior::attack(Monster* monster) {
+    // 플레이어 공격 데미지 계산
+    int monsterDamage = power - monster->getDefense();
+    monsterDamage = (monsterDamage <= 0) ? 1 : monsterDamage;    // 데미지가 0 이하이면 1로 고정
+
+    cout << "[Warrior] Swings sword! -> " << monsterDamage << " damage to " << monster->getName() << "!" << endl;
+
+    return monsterDamage;
 }
 
 // attack() 메서드 구현
 void Warrior::attack() {
-    cout << "Swings a massive sword with great force!" << endl;
+    cout << "Swings sword!" << endl;
 }

@@ -11,12 +11,17 @@ Magician::Magician(string name, int* stat, int level, int hpPotion, int mpPotion
 }
 
 // attack(Monster* monster) 메서드 구현
-void Magician::attack(Monster* monster) {
-    cout << "Casts a blazing Fireball at the enemy!" << endl;
-    cout << power << " damage to " << monster->getName() << endl;
+int Magician::attack(Monster* monster) {
+    // 플레이어 공격 데미지 계산
+    int monsterDamage = power - monster->getDefense();
+    monsterDamage = (monsterDamage <= 0) ? 1 : monsterDamage;    // 데미지가 0 이하이면 1로 고정
+
+    cout << "[Mage] Fires fireball! -> " << monsterDamage << " damage to " << monster->getName() << "!" << endl;
+
+    return monsterDamage;
 }
 
 // attack() 메서드 구현
 void Magician::attack() {
-    cout << "Casts a blazing Fireball at the enemy!" << endl;
+    cout << "Fires fireball!" << endl;
 }

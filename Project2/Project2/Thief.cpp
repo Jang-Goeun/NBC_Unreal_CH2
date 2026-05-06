@@ -11,12 +11,17 @@ Thief::Thief(string name, int* stat, int level, int hpPotion, int mpPotion, int 
 }
 
 // attack(Monster* monster) 메서드 구현
-void Thief::attack(Monster* monster) {
-    cout << "Throws poisoned daggers with lightning speed!" << endl;
-    cout << power << " damage to " << monster->getName() << endl;
+int Thief::attack(Monster* monster) {
+    // 플레이어 공격 데미지 계산
+    int monsterDamage = (power - monster->getDefense()) / 5;
+    monsterDamage = (monsterDamage <= 0) ? 1 : monsterDamage;    // 데미지가 0 이하이면 1로 고정
+
+    cout << "[Thief] Stabs dagger! -> " << monsterDamage << " damage to " << monster->getName() << "! (x5)" << endl;
+
+    return monsterDamage * 5;
 }
 
 // attack() 메서드 구현
 void Thief::attack() {
-    cout << "Throws poisoned daggers with lightning speed!" << endl;
+    cout << "Stabs dagger!" << endl;
 }
