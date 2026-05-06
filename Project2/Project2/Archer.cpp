@@ -1,22 +1,22 @@
-#include "Archer.h"
+ï»¿#include "Archer.h"
 #include "Monster.h"
 #include <iostream>
 
 using namespace std;
 
-// »ý¼ºÀÚ ±¸Çö
+// ìƒì„±ìž êµ¬í˜„
 Archer::Archer(string name, int* stat, int level, int hpPotion, int mpPotion) : Player(name, stat, level, hpPotion, mpPotion) {
     this->job = "Archer";
-    this->power += 30;  // °ø°Ý·Â + 30
+    this->power += 30;  // ê³µê²©ë ¥ + 30
 }
 
-// attack(Monster* monster) ¸Þ¼­µå ±¸Çö
+// attack(Monster* monster) ë©”ì„œë“œ êµ¬í˜„
 void Archer::attack(Monster* monster) {
     cout << "Fires a sharp arrow with deadly precision!" << endl;
     cout << power << " damage to " << monster->getName() << endl;
 }
 
-// attack() ¸Þ¼­µå ±¸Çö
+// attack() ë©”ì„œë“œ êµ¬í˜„
 void Archer::attack() {
     cout << "Fires a sharp arrow with deadly precision!" << endl;
 }

@@ -1,22 +1,22 @@
-#include "Thief.h"
+ï»¿#include "Thief.h"
 #include "Monster.h"
 #include <iostream>
 
 using namespace std;
 
-// »ý¼ºÀÚ ±¸Çö
+// ìƒì„±ìž êµ¬í˜„
 Thief::Thief(string name, int* stat, int level, int hpPotion, int mpPotion) : Player(name, stat, level, hpPotion, mpPotion) {
     this->job = "Thief";
-    this->power += 30;  // °ø°Ý·Â + 30
+    this->power += 30;  // ê³µê²©ë ¥ + 30
 }
 
-// attack(Monster* monster) ¸Þ¼­µå ±¸Çö
+// attack(Monster* monster) ë©”ì„œë“œ êµ¬í˜„
 void Thief::attack(Monster* monster) {
     cout << "Throws poisoned daggers with lightning speed!" << endl;
     cout << power << " damage to " << monster->getName() << endl;
 }
 
-// attack() ¸Þ¼­µå ±¸Çö
+// attack() ë©”ì„œë“œ êµ¬í˜„
 void Thief::attack() {
     cout << "Throws poisoned daggers with lightning speed!" << endl;
 }

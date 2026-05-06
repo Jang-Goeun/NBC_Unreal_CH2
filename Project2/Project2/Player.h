@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <string>
 
 class Monster;
@@ -9,8 +9,8 @@ protected:
 	int level, hp, mp, power, defense, hpPotion, mpPotion;
 
 public:
-	Player(std::string name, int* stat, int level = 1, int hpPotion = 5, int mpPotion = 5);		// »ı¼ºÀÚ
-	virtual ~Player() {}								// °¡»ó ¼Ò¸êÀÚ
+	Player(std::string name, int* stat, int level = 1, int hpPotion = 5, int mpPotion = 5);		// ìƒì„±ì
+	virtual ~Player() {}								// ê°€ìƒ ì†Œë©¸ì
 
 	// getter
 	std::string getName() { return this->name; }
@@ -35,8 +35,8 @@ public:
 	void setMpPotion(int mpPotion) { this->mpPotion = mpPotion; }
 
 
-	void printPlayerStatus();							// »óÅÂ Ãâ·Â ¸Ş¼­µå
-	virtual void attack(Monster* monster) = 0;			// ¼ø¼ö °¡»ó ÇÔ¼ö(ÀüÅõ °ø°İ)
-	virtual void attack() = 0;							// ¼ø¼ö °¡»ó ÇÔ¼ö(°ø°İ ¸Ş½ÃÁö)
-	void upgradeCharacter(Player* player);              // ÇÃ·¹ÀÌ¾î ´É·ÂÄ¡ ¾÷±×·¹ÀÌµå ¸Ş¼­µå
+	void printPlayerStatus();							// ìƒíƒœ ì¶œë ¥ ë©”ì„œë“œ
+	virtual void attack(Monster* monster) = 0;			// ìˆœìˆ˜ ê°€ìƒ í•¨ìˆ˜(ì „íˆ¬ ê³µê²©)
+	virtual void attack() = 0;							// ìˆœìˆ˜ ê°€ìƒ í•¨ìˆ˜(ê³µê²© ë©”ì‹œì§€)
+	void upgradeCharacter(Player* player);              // í”Œë ˆì´ì–´ ëŠ¥ë ¥ì¹˜ ì—…ê·¸ë ˆì´ë“œ ë©”ì„œë“œ
 };

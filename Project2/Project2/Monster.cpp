@@ -1,10 +1,10 @@
-#include "Monster.h"
+ï»¿#include "Monster.h"
 #include "Player.h"
 #include <iostream>
 
 using namespace std;
 
-// »ý¼ºÀÚ ±¸Çö
+// ìƒì„±ìž êµ¬í˜„
 Monster::Monster(string name, string dropItemName, int dropItemPrice, int hp, int power, int defense) {
     this->name = name;
     this->dropItemName = dropItemName;

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <string>
 
 class Player;
@@ -9,9 +9,9 @@ protected:
 	int hp, power, defense, dropItemPrice;
 
 public:
-	// »ı¼ºÀÚ
+	// ìƒì„±ì
 	Monster(std::string name, std::string dropItemName, int dropItemPrice, int hp = 30, int power = 20, int defense = 10);
-	virtual ~Monster() {}								// °¡»ó ¼Ò¸êÀÚ
+	virtual ~Monster() {}								// ê°€ìƒ ì†Œë©¸ì
 	
 	// getter
 	std::string getName() { return this->name; }
@@ -29,5 +29,5 @@ public:
 	void setDefense(int defense) { this->defense = defense; }
 	void setDropItemPrice(int dropItemPrice) { this->dropItemPrice = dropItemPrice; }
 
-	virtual void attack(Player* player) = 0;							// ¼ø¼ö °¡»ó ÇÔ¼ö(°ø°İ)
+	virtual void attack(Player* player) = 0;							// ìˆœìˆ˜ ê°€ìƒ í•¨ìˆ˜(ê³µê²©)
 };

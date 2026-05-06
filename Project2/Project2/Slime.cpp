@@ -1,10 +1,10 @@
-#include "Slime.h"
+ï»¿#include "Slime.h"
 #include "Player.h"
 #include <iostream>
 
 using namespace std;
 
-// »ý¼ºÀÚ ±¸Çö
+// ìƒì„±ìž êµ¬í˜„
 Slime::Slime(string name, string dropItemName, int dropItemPrice, int hp, int power, int defense) : Monster(name, dropItemName, dropItemPrice, hp, power, defense) {
     this->name = name;
     this->dropItemName = dropItemName;
@@ -14,7 +14,7 @@ Slime::Slime(string name, string dropItemName, int dropItemPrice, int hp, int po
     this->defense = defense;
 }
 
-// attack() ¸Þ¼­µå ±¸Çö
+// attack() ë©”ì„œë“œ êµ¬í˜„
 void Slime::attack(Player* player) {
     cout << "Throws poisoned daggers with lightning speed!" << endl;
     cout << power << " damage to " << player->getName() << endl;

@@ -1,22 +1,22 @@
-#include "Magician.h"
+ï»¿#include "Magician.h"
 #include "Monster.h"
 #include <iostream>
 
 using namespace std;
 
-// »ý¼ºÀÚ ±¸Çö
+// ìƒì„±ìž êµ¬í˜„
 Magician::Magician(string name, int* stat, int level, int hpPotion, int mpPotion) : Player(name, stat, level, hpPotion, mpPotion) {
     this->job = "Magician";
-    this->mp += 30;  // ¸¶³ª + 30
+    this->mp += 30;  // ë§ˆë‚˜ + 30
 }
 
-// attack(Monster* monster) ¸Þ¼­µå ±¸Çö
+// attack(Monster* monster) ë©”ì„œë“œ êµ¬í˜„
 void Magician::attack(Monster* monster) {
     cout << "Casts a blazing Fireball at the enemy!" << endl;
     cout << power << " damage to " << monster->getName() << endl;
 }
 
-// attack() ¸Þ¼­µå ±¸Çö
+// attack() ë©”ì„œë“œ êµ¬í˜„
 void Magician::attack() {
     cout << "Casts a blazing Fireball at the enemy!" << endl;
 }

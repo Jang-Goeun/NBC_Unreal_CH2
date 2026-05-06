@@ -1,10 +1,10 @@
-#include "Player.h"
+ï»¿#include "Player.h"
 #include "Monster.h"
 #include <iostream>
 
 using namespace std;
 
-// »ı¼ºÀÚ ±¸Çö
+// ìƒì„±ì êµ¬í˜„
 Player::Player(string name, int* stat, int level, int hpPotion, int mpPotion) {
     this->name = name;
     this->hp = stat[0];
@@ -16,7 +16,7 @@ Player::Player(string name, int* stat, int level, int hpPotion, int mpPotion) {
     this->mpPotion = mpPotion;
 }
 
-// printPlayerStatus ¸Ş¼­µå
+// printPlayerStatus ë©”ì„œë“œ
 void Player::printPlayerStatus() {
     cout << "------------------------------------" << endl;
     cout << "Name: " << getName() << "| Job: " << getJob() << "| Lv." << getLevel() << endl;
@@ -24,13 +24,13 @@ void Player::printPlayerStatus() {
     cout << "------------------------------------" << endl;
 }
 
-// Ä³¸¯ÅÍ ´É·ÂÄ¡¸¦ ¾÷±×·¹ÀÌµåÇÏ´Â ¸Ş¼­µå
-// - Player* player: ÇÃ·¹ÀÌ¾î
+// ìºë¦­í„° ëŠ¥ë ¥ì¹˜ë¥¼ ì—…ê·¸ë ˆì´ë“œí•˜ëŠ” ë©”ì„œë“œ
+// - Player* player: í”Œë ˆì´ì–´
 // - bool* isGameStart
 void Player::upgradeCharacter(Player* player) {
     bool isGameStart = false;
 
-    // ½ºÅÈ °ü¸® ¸Ş´º
+    // ìŠ¤íƒ¯ ê´€ë¦¬ ë©”ë‰´
     cout << "\n\n< Stat management >" << endl;
     cout << "* You received " << player->getHpPotion() << " HP Potions and " << player->getMpPotion() << " MP Potions." << endl;
     cout << "============================================" << endl;
@@ -41,17 +41,17 @@ void Player::upgradeCharacter(Player* player) {
 
 
     while (!isGameStart) {
-        int choice = -1; // »ç¿ëÀÚ ¼±ÅÃ»çÇ× ÀúÀå º¯¼ö
+        int choice = -1; // ì‚¬ìš©ì ì„ íƒì‚¬í•­ ì €ì¥ ë³€ìˆ˜
         cout << "Choose: ";
         cin >> choice;
 
         switch (choice) {
-            // 0. °ÔÀÓ ½ÃÀÛ
+            // 0. ê²Œì„ ì‹œì‘
         case 0:
             isGameStart = true;
             break;
 
-            // 1. HP 20 Áõ°¡
+            // 1. HP 20 ì¦ê°€
         case 1:
             if (player->getHpPotion() == 0)
                 cout << "There is no HP potion." << endl;
@@ -62,7 +62,7 @@ void Player::upgradeCharacter(Player* player) {
             }
             break;
 
-            // 2. MP 20 Áõ°¡
+            // 2. MP 20 ì¦ê°€
         case 2:
             if (player->getMpPotion() == 0)
                 cout << "There is no MP potion." << endl;
@@ -73,24 +73,24 @@ void Player::upgradeCharacter(Player* player) {
             }
             break;
 
-            // 3. Attack 2¹è Áõ°¡
+            // 3. Attack 2ë°° ì¦ê°€
         case 3:
             cout << "* Attack power doubled." << endl;
             player->setPower(player->getPower() * 2);
             break;
 
-            // 4. Defense 2¹è Áõ°¡
+            // 4. Defense 2ë°° ì¦ê°€
         case 4:
             cout << "* Defense power doubled." << endl;
             player->setDefense(player->getDefense() * 2);
             break;
 
-            // 5. »ç¿ëÀÚ Á¤º¸ Ãâ·Â
+            // 5. ì‚¬ìš©ì ì •ë³´ ì¶œë ¥
         case 5:
             player->printPlayerStatus();
             break;
 
-            // ¿¹¿Ü. ¾ø´Â ¼±ÅÃÁö ¼±ÅÃ
+            // ì˜ˆì™¸. ì—†ëŠ” ì„ íƒì§€ ì„ íƒ
         default:
             cout << "You have selected an option that does not exist.\nPlease select again." << endl;
             break;

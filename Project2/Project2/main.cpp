@@ -1,4 +1,4 @@
-#include <iostream>
+ï»¿#include <iostream>
 #include <string>
 #include <vector>
 #include <ctime>
@@ -12,20 +12,20 @@
 
 using namespace std;
 
-// ÀÎº¥Åä¸® ±¸Á¶Ã¼
+// ì¸ë²¤í† ë¦¬ êµ¬ì¡°ì²´
 struct Item {
     string name;
     int price; 
     void PrintInfo() const { cout << name << " " << "(" << price << "G)" << endl; }
 };
 
-// Æ÷¼Ç ·¹½ÃÇÇ Àç·á Á¤º¸ ±¸Á¶Ã¼
+// í¬ì…˜ ë ˆì‹œí”¼ ì¬ë£Œ ì •ë³´ êµ¬ì¡°ì²´
 struct Ingredient {
     string name;
     int count;
 };
 
-// Æ÷¼Ç ·¹½ÃÇÇ ±¸Á¶Ã¼
+// í¬ì…˜ ë ˆì‹œí”¼ êµ¬ì¡°ì²´
 struct PotionRecipe {
     string name;
     vector<Ingredient> ingredients;
@@ -38,14 +38,14 @@ struct PotionRecipe {
     }
 };
 
-vector<Item> inventory;                 // ÀÎº¥Åä¸®
-vector<PotionRecipe> potionRecipe;      // Æ÷¼Ç ·¹½ÃÇÇ
+vector<Item> inventory;                 // ì¸ë²¤í† ë¦¬
+vector<PotionRecipe> potionRecipe;      // í¬ì…˜ ë ˆì‹œí”¼
 
-// »óÅÂ Á¤º¸ ÀÔ·Â ¸Ş¼­µå 
-// - ÀÔ·Â À¯È¿¼º °Ë»ç ÁøÇà
-// - ¸ğµÎ 50º¸´Ù Å¬ ¶§¸¸ ÀÔ·Â ·çÇÁ Å»Ãâ
-// - string inputStat1: Ã¹¹øÂ° ÀÔ·Â ½ºÅÈ ¿ä¼Ò ÀÌ¸§
-// - string inputStat2: µÎ¹øÂ° ÀÔ·Â ½ºÅÈ ¿ä¼Ò ÀÌ¸§
+// ìƒíƒœ ì •ë³´ ì…ë ¥ ë©”ì„œë“œ 
+// - ì…ë ¥ ìœ íš¨ì„± ê²€ì‚¬ ì§„í–‰
+// - ëª¨ë‘ 50ë³´ë‹¤ í´ ë•Œë§Œ ì…ë ¥ ë£¨í”„ íƒˆì¶œ
+// - string inputStat1: ì²«ë²ˆì§¸ ì…ë ¥ ìŠ¤íƒ¯ ìš”ì†Œ ì´ë¦„
+// - string inputStat2: ë‘ë²ˆì§¸ ì…ë ¥ ìŠ¤íƒ¯ ìš”ì†Œ ì´ë¦„
 void inputStat(int* stat, string inputStat1, string inputStat2) {
     int stat1, stat2;
     while (true) {
@@ -64,34 +64,34 @@ void inputStat(int* stat, string inputStat1, string inputStat2) {
     }
 }
 
-// ÀüÅõ ¸Ş¼­µå 
-// - ÇÃ·¹ÀÌ¾î ½Â¸® ½Ã true ¹İÈ¯
-// - ¸ó½ºÅÍ ½Â¸® ½Ã false ¹İÈ¯
-// - Player* player: ÇÃ·¹ÀÌ¾î
-// - Monster* monster: ÀüÅõ ¸ó½ºÅÍ
+// ì „íˆ¬ ë©”ì„œë“œ 
+// - í”Œë ˆì´ì–´ ìŠ¹ë¦¬ ì‹œ true ë°˜í™˜
+// - ëª¬ìŠ¤í„° ìŠ¹ë¦¬ ì‹œ false ë°˜í™˜
+// - Player* player: í”Œë ˆì´ì–´
+// - Monster* monster: ì „íˆ¬ ëª¬ìŠ¤í„°
 bool battle(Player* player, Monster* monster) {
     string playerName = player->getName();
     string monsterName = monster->getName();
     bool battleResult = true;
 
-    // ÀüÅõ ½ÃÀÛ ¸àÆ® Ãâ·Â
+    // ì „íˆ¬ ì‹œì‘ ë©˜íŠ¸ ì¶œë ¥
     cout << "\n[ Battle Start! ] " << playerName << "(" << player->getJob() << ") vs " << monsterName << endl << endl;
 
-    // ÀüÅõ ÁøÇà while¹®(µÑ Áß ÇÏ³ª°¡ Á×À» ¶§±îÁö)
+    // ì „íˆ¬ ì§„í–‰ whileë¬¸(ë‘˜ ì¤‘ í•˜ë‚˜ê°€ ì£½ì„ ë•Œê¹Œì§€)
     while (player->getHp() > 0 && monster->getHp() > 0) {
         // Player Turn
         cout << "--- " << playerName << " Turn --- " << endl;
         player->attack(monster);
 
-        // ÇÃ·¹ÀÌ¾î °ø°İ µ¥¹ÌÁö °è»ê
+        // í”Œë ˆì´ì–´ ê³µê²© ë°ë¯¸ì§€ ê³„ì‚°
         int monsterDamage = player->getPower() - monster->getDefense();
-        monsterDamage = (monsterDamage <= 0) ? 1 : monsterDamage;    // µ¥¹ÌÁö°¡ 0 ÀÌÇÏÀÌ¸é 1·Î °íÁ¤
+        monsterDamage = (monsterDamage <= 0) ? 1 : monsterDamage;    // ë°ë¯¸ì§€ê°€ 0 ì´í•˜ì´ë©´ 1ë¡œ ê³ ì •
         
         cout << monsterName << " HP: " << monster->getHp() << " -> ";
         monster->setHp(monster->getHp() - monsterDamage);
         cout << monster->getHp();
         
-        // ¸ó½ºÅÍ »ç¸Á
+        // ëª¬ìŠ¤í„° ì‚¬ë§
         if (monster->getHp() <= 0) {
             cout << " (Dead)" << endl << endl;
             continue;
@@ -103,15 +103,15 @@ bool battle(Player* player, Monster* monster) {
         cout << "--- " << monsterName << " Turn-- - " << endl;
         monster->attack(player);
 
-        // ¸ó½ºÅÍ °ø°İ µ¥¹ÌÁö °è»ê
+        // ëª¬ìŠ¤í„° ê³µê²© ë°ë¯¸ì§€ ê³„ì‚°
         int playerDamage = monster->getPower() - player->getDefense();
-        playerDamage = (playerDamage <= 0) ? 1 : playerDamage;    // µ¥¹ÌÁö°¡ 0 ÀÌÇÏÀÌ¸é 1·Î °íÁ¤
+        playerDamage = (playerDamage <= 0) ? 1 : playerDamage;    // ë°ë¯¸ì§€ê°€ 0 ì´í•˜ì´ë©´ 1ë¡œ ê³ ì •
 
         cout << playerName << " HP: " << player->getHp() << " -> ";
         player->setHp(player->getHp() - playerDamage);
         cout << player->getHp();
 
-        // ÇÃ·¹ÀÌ¾î »ç¸Á
+        // í”Œë ˆì´ì–´ ì‚¬ë§
         if (player->getHp() <= 0) {
             cout << " (Dead)" << endl << endl;
             battleResult = false;
@@ -124,29 +124,29 @@ bool battle(Player* player, Monster* monster) {
     return battleResult;
 }
 
-// ÀüÅõ °á°ú Ãâ·Â ¸Ş¼­µå 
-// ½Â¸® ½Ã °á°ú Ãâ·Â ÈÄ ¾ÆÀÌÅÛ ÀúÀå
-// - battleResult: ÀüÅõ °á°ú
-// - Player* player: ÇÃ·¹ÀÌ¾î
-// - Monster* monster: ÀüÅõ ¸ó½ºÅÍ
+// ì „íˆ¬ ê²°ê³¼ ì¶œë ¥ ë©”ì„œë“œ 
+// ìŠ¹ë¦¬ ì‹œ ê²°ê³¼ ì¶œë ¥ í›„ ì•„ì´í…œ ì €ì¥
+// - battleResult: ì „íˆ¬ ê²°ê³¼
+// - Player* player: í”Œë ˆì´ì–´
+// - Monster* monster: ì „íˆ¬ ëª¬ìŠ¤í„°
 void battleResultPrint(bool battleResult, Monster* monster, Player* player) {
     if (battleResult) {
-        cout << "¡Ú Victory!" << endl;
+        cout << "â˜… Victory!" << endl;
         cout << "  -> Got: " << monster->getDropItemName() << "!" << endl;
         cout << "  -> Saved to inventory." << endl << endl;
 
-        // ÀÎº¥Åä¸®¿¡ ¾ÆÀÌÅÛ Ãß°¡
+        // ì¸ë²¤í† ë¦¬ì— ì•„ì´í…œ ì¶”ê°€
         Item droppedItem = { monster->getDropItemName(), monster->getDropItemPrice() };
         inventory.push_back(droppedItem);
     }
     else {
-        cout << "¡Ú Defeat.." << endl;
+        cout << "â˜… Defeat.." << endl;
         cout << "  -> " << player->getName() << " was attacked by " << monster->getName() << " and died." << endl;
         cout << "Please try again!" << endl << endl;
     }
 }
 
-// ÀüÃ¼ ·¹½ÃÇÇ Ãâ·Â ¸Ş¼­µå
+// ì „ì²´ ë ˆì‹œí”¼ ì¶œë ¥ ë©”ì„œë“œ
 void ShowAllRecipes() {
     if (potionRecipe.empty()) {
         cout << "The recipe book is empty..." << endl << endl;
@@ -162,7 +162,7 @@ void ShowAllRecipes() {
     cout << endl;
 }
 
-// ÀÌ¸§ÀÌ ÀÏÄ¡ÇÏ´Â ·¹½ÃÇÇ Ãâ·Â ¸Ş¼­µå
+// ì´ë¦„ì´ ì¼ì¹˜í•˜ëŠ” ë ˆì‹œí”¼ ì¶œë ¥ ë©”ì„œë“œ
 void SearchByName(string name) {
 
     bool found = false;
@@ -177,14 +177,14 @@ void SearchByName(string name) {
         }
     }
 
-    // Ã£Áö ¸øÇßÀ» °æ¿ì
+    // ì°¾ì§€ ëª»í–ˆì„ ê²½ìš°
     if(!found)
         cout << "No potion found with that name." << endl;
 
     cout << endl;
 }
 
-// Å°¿öµå Àç·á¸¦ Æ÷ÇÔÇÑ ·¹½ÃÇÇ ÀüºÎ Ãâ·Â ¸Ş¼­µå
+// í‚¤ì›Œë“œ ì¬ë£Œë¥¼ í¬í•¨í•œ ë ˆì‹œí”¼ ì „ë¶€ ì¶œë ¥ ë©”ì„œë“œ
 void SearchByIngredient(string ingredient) {
 
     bool found = false;
@@ -203,20 +203,20 @@ void SearchByIngredient(string ingredient) {
         }
     }
 
-    // Ã£Áö ¸øÇßÀ» °æ¿ì
+    // ì°¾ì§€ ëª»í–ˆì„ ê²½ìš°
     if (!found)
         cout << "No potion found with that ingredient." << endl;
-    // Ã£¾ÒÀ» °æ¿ì
+    // ì°¾ì•˜ì„ ê²½ìš°
     else
         cout << "Found " << count << " recipes." << endl;
 
     cout << endl;
 }
 
-// Æ÷¼Ç Á¦ÀÛ¼Ò ¸Ş¼­µå
+// í¬ì…˜ ì œì‘ì†Œ ë©”ì„œë“œ
 void showAlchemyWorkshop() {
     int shopChoice;
-    bool isValidSelection = false; // 0¹ø ¼±ÅÃÇßÀ» °æ¿ì¸¸ True·Î º¯°æ
+    bool isValidSelection = false; // 0ë²ˆ ì„ íƒí–ˆì„ ê²½ìš°ë§Œ Trueë¡œ ë³€ê²½
     string searchKeyword;
 
     cout << "\n=== Potion Shop ===" << endl;
@@ -230,32 +230,32 @@ void showAlchemyWorkshop() {
         cin >> shopChoice;
 
         switch (shopChoice) {
-            // µÇµ¹¾Æ°¡±â
+            // ë˜ëŒì•„ê°€ê¸°
             case 0:
                 isValidSelection = true;
                 break;
 
-            // ÀüÃ¼ ·¹½ÃÇÇ º¸±â
+            // ì „ì²´ ë ˆì‹œí”¼ ë³´ê¸°
             case 1:
                 cout << "[ Potion Recipes ]" << endl;
                 ShowAllRecipes();
                 break;
 
-            // Æ÷¼Ç ÀÌ¸§À¸·Î °Ë»ö
+            // í¬ì…˜ ì´ë¦„ìœ¼ë¡œ ê²€ìƒ‰
             case 2:
                 cout << "Search potion name: ";
                 cin >> searchKeyword;
                 SearchByName(searchKeyword);
                 break;
 
-            // Àç·á·Î °Ë»ö
+            // ì¬ë£Œë¡œ ê²€ìƒ‰
             case 3:
                 cout << "Search ingredient: ";
                 cin >> searchKeyword;
                 SearchByIngredient(searchKeyword);
                 break;
 
-            // ÀÌ¿ÜÀÇ ¼ıÀÚ ¼±ÅÃ
+            // ì´ì™¸ì˜ ìˆ«ì ì„ íƒ
             default:
                 cout << "Invalid choice. Please select again!" << endl;
                 break;
@@ -263,13 +263,13 @@ void showAlchemyWorkshop() {
     } while (!isValidSelection);
 }
 
-// Æ÷¼Ç ¼ö º¯°æ(µµÀü °úÁ¦1)
-// º»ÀÎÀº °´Ã¼ÀÇ ¸â¹öº¯¼ö·Î Æ÷¼ÇÀ» ÀúÀåÇØµÎ¾î ÇØ´ç ÇÔ¼ö°¡ ÇÊ¿ä ¾øÀ½
-// °úÁ¦ ¼öÇàÀ» À§ÇØ ÀÛ¼º¸¸ ÇØµĞ »óÅÂ
-// Æ÷¼Ç »ç¿ëÀº getter/setter·Î ÁøÇà Áß
-// Æ÷ÀÎÅÍ¸¦ ¾²Áö ¾Ê°í ¸Å°³º¯¼ö¸¸ ³Ñ°åÀ» ¶§ °ªÀÌ ¹Ù²îÁö ¾Ê´Â ÀÌÀ¯¸¦ ¼³¸í: 
-// -> Æ÷ÀÎÅÍ¸¦ »ç¿ëÇÏÁö ¾ÊÀ¸¸é ¸Å°³º¯¼ö·Î °ªÀ» ³Ñ±æ ¶§ °ªÀÇ º¹»ç°¡ ÀÌ·ç¾îÁö¹Ç·Î ¿øº»¿¡´Â ¿µÇâÀ» ÁÖÁö ¾ÊÀ½.
-//    µû¶ó¼­ Æ÷ÀÎÅÍ¸¦ ¾È¾²¸é ¸Å°³º¯¼ö·Î ³Ñ±ä °ªÀ» ¹Ù²ãµµ ¿øº» °ªÀÌ ¹Ù²îÁö ¾ÊÀ½
+// í¬ì…˜ ìˆ˜ ë³€ê²½(ë„ì „ ê³¼ì œ1)
+// ë³¸ì¸ì€ ê°ì²´ì˜ ë©¤ë²„ë³€ìˆ˜ë¡œ í¬ì…˜ì„ ì €ì¥í•´ë‘ì–´ í•´ë‹¹ í•¨ìˆ˜ê°€ í•„ìš” ì—†ìŒ
+// ê³¼ì œ ìˆ˜í–‰ì„ ìœ„í•´ ì‘ì„±ë§Œ í•´ë‘” ìƒíƒœ
+// í¬ì…˜ ì‚¬ìš©ì€ getter/setterë¡œ ì§„í–‰ ì¤‘
+// í¬ì¸í„°ë¥¼ ì“°ì§€ ì•Šê³  ë§¤ê°œë³€ìˆ˜ë§Œ ë„˜ê²¼ì„ ë•Œ ê°’ì´ ë°”ë€Œì§€ ì•ŠëŠ” ì´ìœ ë¥¼ ì„¤ëª…: 
+// -> í¬ì¸í„°ë¥¼ ì‚¬ìš©í•˜ì§€ ì•Šìœ¼ë©´ ë§¤ê°œë³€ìˆ˜ë¡œ ê°’ì„ ë„˜ê¸¸ ë•Œ ê°’ì˜ ë³µì‚¬ê°€ ì´ë£¨ì–´ì§€ë¯€ë¡œ ì›ë³¸ì—ëŠ” ì˜í–¥ì„ ì£¼ì§€ ì•ŠìŒ.
+//    ë”°ë¼ì„œ í¬ì¸í„°ë¥¼ ì•ˆì“°ë©´ ë§¤ê°œë³€ìˆ˜ë¡œ ë„˜ê¸´ ê°’ì„ ë°”ê¿”ë„ ì›ë³¸ ê°’ì´ ë°”ë€Œì§€ ì•ŠìŒ
 /*
 void setPotion(int count, int* p_HPPotion, int* p_MPPotion) {
     *p_HPPotion = count;
@@ -281,21 +281,21 @@ void setPotion(int count, int* p_HPPotion, int* p_MPPotion) {
 int main() {
     srand((unsigned int)time(NULL));
 
-    // º¯¼ö ¼±¾ğ
-    string name;                // Ä³¸¯ÅÍ ÀÌ¸§
-    int stat[4] = { 0 };		// Ä³¸¯ÅÍ ½ºÅÈ { "HP", "MP", "°ø°İ·Â", "¹æ¾î·Â" }
-    Player* player = nullptr;   // ÇÃ·¹ÀÌ¾î  
+    // ë³€ìˆ˜ ì„ ì–¸
+    string name;                // ìºë¦­í„° ì´ë¦„
+    int stat[4] = { 0 };		// ìºë¦­í„° ìŠ¤íƒ¯ { "HP", "MP", "ê³µê²©ë ¥", "ë°©ì–´ë ¥" }
+    Player* player = nullptr;   // í”Œë ˆì´ì–´  
 
-    // ·¹½ÃÇÇ Ãß°¡ 
+    // ë ˆì‹œí”¼ ì¶”ê°€ 
     potionRecipe.push_back({ "HPPotion", {{"Herb", 1}, {"Clear Water", 1}} });
     potionRecipe.push_back({ "StaminaPotion", {{"Herb", 1}, {"Berry", 1}} });
 
-    // °ÔÀÓ ÇÁ·Ñ·Î±× ½ÃÀÛ 
+    // ê²Œì„ í”„ë¡¤ë¡œê·¸ ì‹œì‘ 
     cout << "===========================================" << endl;
     cout << "   [ Dungeon Escape Text RPG ]" << endl;
     cout << "===========================================" << endl;
 
-    // ÇÃ·¹ÀÌ¾î Á¤º¸ ÀÔ·Â
+    // í”Œë ˆì´ì–´ ì •ë³´ ì…ë ¥
     cout << "Enter your hero's name: ";
     cin >> name;
     cout << endl;
@@ -304,7 +304,7 @@ int main() {
     inputStat(stat, "Attack", "Defense");
     cout << endl;
 
-    // Á÷¾÷ ¼±ÅÃ
+    // ì§ì—… ì„ íƒ
     int jobChoice;
     bool isValidSelection = false;
 
@@ -314,7 +314,7 @@ int main() {
     cout << "Choice: ";
     cin >> jobChoice;
 
-    // Á÷¾÷ ÇÒ´ç
+    // ì§ì—… í• ë‹¹
     while (!isValidSelection) {
         switch (jobChoice) {
             case 1: 
@@ -345,11 +345,11 @@ int main() {
         }
     }
 
-    // ±âº» °ø°İ ¸Ş½ÃÁö¿Í ÇÃ·¹ÀÌ¾î Á¤º¸ Ãâ·Â
+    // ê¸°ë³¸ ê³µê²© ë©”ì‹œì§€ì™€ í”Œë ˆì´ì–´ ì •ë³´ ì¶œë ¥
     player->attack();
     player->printPlayerStatus(); 
 
-    // ¸ŞÀÎ
+    // ë©”ì¸
     bool isGameOver = false;
 
     while (!isGameOver) {
@@ -366,12 +366,12 @@ int main() {
         cin >> menuChoice;
 
         switch (menuChoice) {
-            // °ÔÀÓ Á¾·á
+            // ê²Œì„ ì¢…ë£Œ
             case 0: {
                 isGameOver = true;
                 break;
             }
-            // ´øÀü ÀÔÀå
+            // ë˜ì „ ì…ì¥
             case 1: {
                 Monster * monster = (rand() % 2 == 0) ? new Slime("Slime", "Slime Jelly", 30) : new Slime("King Slime", "Crown", 100, 60, 40 , 30);
                 battleResultPrint(battle(player, monster), monster, player);
@@ -379,7 +379,7 @@ int main() {
                 if (player->getHp() <= 0) isGameOver = true;
                 break;
             }
-            // ÀÎº¥Åä¸® È®ÀÎ
+            // ì¸ë²¤í† ë¦¬ í™•ì¸
             case 2: {
                 cout << "[ Inventory (" << inventory.size() << "/ 10) ]" << endl;
 
@@ -389,7 +389,7 @@ int main() {
                 }
                 break;
             }
-            // Æ÷¼Ç Á¦ÀÛ¼Ò
+            // í¬ì…˜ ì œì‘ì†Œ
             case 3: {
                 showAlchemyWorkshop();
 
@@ -400,12 +400,12 @@ int main() {
                 cout << "0. Quit" << endl << endl;
                 break;
             }
-            // Æ÷¼Ç »ç¿ë
+            // í¬ì…˜ ì‚¬ìš©
             case 4: {
                 player->upgradeCharacter(player);
                 break;
             }
-            // ÀÌ¿ÜÀÇ ¼ıÀÚ ¼±ÅÃ
+            // ì´ì™¸ì˜ ìˆ«ì ì„ íƒ
             default: {
                 cout << "Invalid choice. Please select again!" << endl;
                 break;
@@ -413,7 +413,7 @@ int main() {
         }
     }
 
-    // ÇÁ·Î±×·¥ Á¾·á Àü ¸Ş¸ğ¸® ÇØÁ¦
+    // í”„ë¡œê·¸ë¨ ì¢…ë£Œ ì „ ë©”ëª¨ë¦¬ í•´ì œ
     if (player != nullptr) {
         delete player;
         player = nullptr;

@@ -1,9 +1,9 @@
-#pragma once
+ï»¿#pragma once
 #include "Player.h"
 
 class Warrior : public Player {
 public:
-	Warrior(std::string name, int* stat, int level = 1, int hpPotion = 5, int mpPotion = 5);		// »ı¼ºÀÚ
+	Warrior(std::string name, int* stat, int level = 1, int hpPotion = 5, int mpPotion = 5);		// ìƒì„±ì
 	void attack(Monster* monster) override;
 	void attack() override;
 };
