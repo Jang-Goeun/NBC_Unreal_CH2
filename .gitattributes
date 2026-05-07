@@ -2,3 +2,11 @@
 * text=auto
 *.h linguist-language=cpp
 *.c linguist-language=cpp
+
+vendor/* linguist-vendored
+include/external/* linguist-vendored
+
+*.csproj linguist-vendored
+*.sln linguist-vendored
+
+path/to/file.c linguist-detectable=false
