@@ -29,6 +29,8 @@ public:
     void settPrice(int price) { this->price = price; }
     void setCount(int count) { this->count = count; }
 
+    void addCount(int val);
+
     void printInfo();
-    virtual void useItem(Player* player) = 0;
+    virtual bool useItem(Player* player) = 0;
 };

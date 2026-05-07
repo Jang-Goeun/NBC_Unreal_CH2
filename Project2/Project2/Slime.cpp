@@ -16,7 +16,11 @@ Slime::Slime(string name, string dropItemName, int dropItemPrice, int hp, int po
 }
 
 // attack() 메서드 구현
-void Slime::attack(Player* player) {
-    cout << "Throws poisoned daggers with lightning speed!" << endl;
-    cout << power << " damage to " << player->getName() << endl;
+int Slime::attack(Player* player) {
+    int damage = power - player->getDefense();
+    damage = (damage <= 0) ? 1 : damage;
+
+    cout << "[" << name << "] Throws poisoned daggers with lightning speed! -> " << damage << " damage to " << player->getName() << "!" << endl;
+
+    return damage;
 }

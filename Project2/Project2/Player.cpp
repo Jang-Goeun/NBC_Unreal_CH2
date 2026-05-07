@@ -2,11 +2,12 @@
 #include "Monster.h"
 #include "Item.h"
 #include <iostream>
+#include <algorithm>
 
 using namespace std;
 
 // 생성자 구현
-Player::Player(string name, int* stat, int level, int exp, int maxExp) {
+Player::Player(string name, int* stat, int level, int exp, int maxExp, int maxHp) {
     this->name = name;
     this->hp = stat[0];
     this->mp = stat[1];
@@ -15,6 +16,7 @@ Player::Player(string name, int* stat, int level, int exp, int maxExp) {
     this->level = level;
     this->exp = exp;
     this->maxExp = maxExp;
+    this->maxHp = maxHp;
 }
 
 // printPlayerStatus 메서드
@@ -59,9 +61,9 @@ void Player::upgradeCharacter(unique_ptr<Item>& hpPotion, unique_ptr<Item>& mpPo
             if (hpPotionCount == 0)
                 cout << "There is no HP potion." << endl;
             else {
-                cout << "* HP increased by 20. (HP Potion used: " << --hpPotionCount << " left)." << endl;
+                cout << "* HP increased by " << hpPotion->getEffectValue() << ". (HP Potion used: " << --hpPotionCount << " left)." << endl;
                 hpPotion->setCount(hpPotionCount);
-                hp += 20;
+                hp = min(hp + hpPotion->getEffectValue(), maxHp);
             }
             break;
 
@@ -70,9 +72,9 @@ void Player::upgradeCharacter(unique_ptr<Item>& hpPotion, unique_ptr<Item>& mpPo
             if (mpPotionCount == 0)
                 cout << "There is no MP potion." << endl;
             else {
-                cout << "* MP increased by 20. (MP Potion used: " << --mpPotionCount << " left)." << endl;
+                cout << "* MP increased by " << mpPotion->getEffectValue() << ". (MP Potion used: " << --mpPotionCount << " left)." << endl;
                 mpPotion->setCount(mpPotionCount);
-                mp += 20;
+                mp += mpPotion->getEffectValue();
             }
             break;
 

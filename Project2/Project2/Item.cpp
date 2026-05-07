@@ -14,3 +14,8 @@ Item::Item(string name, int count) {
 void Item::printInfo() {
     cout << name << " " << "(" << price << "G) x" << count << endl;
 }
+
+// addCount 메서드
+void Item::addCount(int val) {
+    count += val;
+}

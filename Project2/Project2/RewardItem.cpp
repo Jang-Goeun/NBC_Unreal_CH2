@@ -12,8 +12,12 @@ RewardItem::RewardItem(string name, string effectName, int effectValue, int pric
 }
 
 // useItem() 메서드 구현
-void RewardItem::useItem(Player* player) {
+// 잔여 아이템이 없을 경우 true 반환
+bool RewardItem::useItem(Player* player) {
     cout << "* " << name << " used! " << effectName << " restored by " << effectValue << " (" << player->getHp() << " -> ";
-    player->setHp(player->getHp() + 50);
+    player->setHp(min(player->getHp() + effectValue, player->getMaxHp()));
     cout << player->getHp() << ")" << endl << endl;
+    --count;
+
+    return (count <= 0);
 }

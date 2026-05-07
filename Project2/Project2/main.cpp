@@ -1,4 +1,5 @@
 ﻿#include <iostream>
+#include <algorithm>
 #include <string>
 #include <vector>
 #include <memory>
@@ -41,8 +42,8 @@ vector<PotionRecipe> potionRecipe;      // 포션 레시피
 // 상태 정보 입력 메서드 
 // - 입력 유효성 검사 진행
 // - 모두 50보다 클 때만 입력 루프 탈출
-// - string inputStat1: 첫번째 입력 스탯 요소 이름
-// - string inputStat2: 두번째 입력 스탯 요소 이름
+// @param inputStat1: 첫번째 입력 스탯 요소 이름
+// @param inputStat2: 두번째 입력 스탯 요소 이름
 void inputStat(int* stat, string inputStat1, string inputStat2) {
     int stat1, stat2;
     while (true) {
@@ -61,67 +62,140 @@ void inputStat(int* stat, string inputStat1, string inputStat2) {
     }
 }
 
-// 전투 메서드 
+/* 인벤토리 관련 메서드*/
+// 아이템 추가 메서드
+// 1. 인벤토리에 같은 이름을 가진 아이템이 있는지 확인
+// 2. 아이템이 이미 있다면: 수량만 증가
+// 3. 아이템이 없다면: 새로운 객체 생성하여 추가
+// 3-1. isPotion일 경우 포션 클래스 타입으로 아니라면 리워드아이템 클래스 타입으로
+void addItem(string name, string effectName, int effectValue, int price, int count, bool isPotion) {
+    
+    auto it = std::find_if(inventory.begin(), inventory.end(), [&](const std::unique_ptr<Item>& item) {
+        return item->getName() == name;
+        });
+
+    if (it != inventory.end()) {
+        (*it)->addCount(count);
+    }
+    else if(isPotion) {
+        inventory.push_back(std::make_unique<Potion>(name, effectName, effectValue, price, count));
+    }
+    else {
+        inventory.push_back(std::make_unique<RewardItem>(name, effectName, effectValue, price, count));
+    }
+}
+
+/* 전투 관련 메서드*/
+
+// 플레이어 공격 처리 메서드
+// - 몬스터가 죽으면 true 반환
+bool handlePlayerAttack(Player* player, Monster* monster) {
+    int damage = player->attack(monster);
+
+    cout << monster->getName() << " HP: " << monster->getHp() << " -> ";
+    monster->setHp(monster->getHp() - damage);
+    cout << monster->getHp() << (monster->getHp() <= 0 ? " (Dead)\n" : "") << endl;
+
+    return monster->getHp() <= 0;
+}
+
+// 몬스터 공격 처리 메서드
+void handleMonsterAttack(Monster* monster, Player* player) {
+    cout << "\n--- " << monster->getName() << " Turn ---" << endl;
+
+    // 데미지 계산 로직
+    int damage = monster->attack(player);
+
+    cout << player->getName() << " HP: " << player->getHp() << " -> ";
+    player->setHp(player->getHp() - damage);
+    cout << player->getHp() << (player->getHp() <= 0 ? " (Dead)\n" : "") << endl;
+}
+
+// 아이템 메뉴 및 사용 처리 메서드
+// - 아이템을 실제 사용했을 경우에만 true(턴 소모) 반환
+bool handleItemMenu(Player* player) {
+    if (inventory.empty()) {
+        cout << "Inventory is empty!" << endl;
+        return false; // 턴 소모 안 함
+    }
+
+    // 인벤토리 출력
+    cout << "\n[ Inventory ]" << endl;
+    for (int i = 0; i < inventory.size(); ++i) {
+        cout << i + 1 << ". ";
+        inventory[i]->printInfo(); // 아이템 이름, 수량 등 출력
+    }
+
+    int choice;
+    cout << "Choose: ";
+    cin >> choice;
+
+    // 아이템 사용 처리
+    if (choice > 0 && choice <= inventory.size()) {
+        // useItem은 수량이 0이 되면 true를 반환함
+        if (inventory[choice - 1]->useItem(player)) {
+            inventory.erase(inventory.begin() + (choice - 1));
+        }
+        return true; // 아이템 사용 성공 -> 턴 종료
+    }
+
+    cout << "Action canceled." << endl;
+    return false; // 취소했으므로 턴 종료 안 함
+}
+
+// 전투 메서드
 // - 플레이어 승리 시 true 반환
 // - 몬스터 승리 시 false 반환
-// - Player* player: 플레이어
-// - Monster* monster: 전투 몬스터
+// @param player: 전투를 수행할 플레이어 객체
+// @param monster: 전투 대상 몬스터 객체
 bool battle(Player* player, Monster* monster) {
     string playerName = player->getName();
     string monsterName = monster->getName();
-    bool battleResult = true;
 
-    // 전투 시작 멘트 출력
-    cout << "\n[ Battle Start! ] " << playerName << "(" << player->getJob() << ") vs " << monsterName << endl << endl;
+    cout << "\n\n[ Battle Start! ] " << playerName << "(" << player->getJob() << ") vs " << monsterName << endl;
 
-    // 전투 진행 while문(둘 중 하나가 죽을 때까지)
+    // 전투 루프: 둘 중 하나가 사망할 때까지 반복
     while (player->getHp() > 0 && monster->getHp() > 0) {
-        // Player Turn
-        cout << "--- " << playerName << " Turn --- " << endl;
-        int monsterDamage = player->attack(monster);
+        int action;
+        bool turnEnd = false; // 플레이어가 행동을 완료했는지 체크
 
-        cout << monsterName << " HP: " << monster->getHp() << " -> ";
-        monster->setHp(monster->getHp() - monsterDamage);
-        cout << monster->getHp();
+        cout << "\n--- " << playerName << " Turn ---" << endl;
+        cout << "1. Attack" << endl;
+        cout << "2. Use Item" << endl;
+        cout << "Choose: ";
+        cin >> action;
 
-        // 몬스터 사망
-        if (monster->getHp() <= 0) {
-            cout << " (Dead)" << endl << endl;
-            continue;
+        if (action == 1) {
+            // 플레이어 공격 실행 및 몬스터 사망 여부 확인
+            if (handlePlayerAttack(player, monster)) {
+                return true; // 몬스터 사망 시 즉시 플레이어 승리 반환
+            }
+            turnEnd = true;
+        }
+        else if (action == 2) {
+            // 아이템 메뉴 실행 (아이템 사용 시에만 턴 종료)
+            turnEnd = handleItemMenu(player);
+        }
+        else {
+            cout << "Invalid choice. Please select again!" << endl;
         }
 
-        cout << endl;
-
-        // Monster Turn
-        cout << "--- " << monsterName << " Turn--- " << endl;
-        monster->attack(player);
-
-        // 몬스터 공격 데미지 계산
-        int playerDamage = monster->getPower() - player->getDefense();
-        playerDamage = (playerDamage <= 0) ? 1 : playerDamage;    // 데미지가 0 이하이면 1로 고정
-
-        cout << playerName << " HP: " << player->getHp() << " -> ";
-        player->setHp(player->getHp() - playerDamage);
-        cout << player->getHp();
-
-        // 플레이어 사망
-        if (player->getHp() <= 0) {
-            cout << " (Dead)" << endl << endl;
-            battleResult = false;
-            continue;
+        // 플레이어가 행동을 마쳤고, 몬스터가 살아있다면 몬스터 반격
+        if (turnEnd && monster->getHp() > 0) {
+            handleMonsterAttack(monster, player);
         }
 
-        cout << endl;
+        // 플레이어 사망 시 루프 종료 후 false 반환 (while 조건문에서 걸러짐)
     }
 
-    return battleResult;
+    return player->getHp() > 0;
 }
 
 // 전투 결과 출력 메서드 
 // 승리 시 결과 출력 후 아이템 저장 & exp 증가
-// - battleResult: 전투 결과
-// - Player* player: 플레이어
-// - Monster* monster: 전투 몬스터
+// @param battleResult: 전투 결과
+// @param player: 플레이어
+// @param monster: 전투 몬스터
 void battleResultPrint(bool battleResult, Monster* monster, Player* player) {
     if (battleResult) {
         // 결과 출력
@@ -131,32 +205,32 @@ void battleResultPrint(bool battleResult, Monster* monster, Player* player) {
 
         // exp 증가
         player->setExp(player->getExp() + monster->getExpReward());
-        cout << "  -> +" << monster->getExpReward() << " EXP! (EXP: " << player->getExp() << "/" << player->getMaxExp() << ")" << endl << endl;
+        cout << "  -> +" << monster->getExpReward() << " EXP! (EXP: " << player->getExp() << "/" << player->getMaxExp() << ")" << endl;
 
         // 레벨업
         if (player->getExp() >= player->getMaxExp()) {
-            cout << "... Level up condition met" << endl;
+            cout << "\n... Level up condition met" << endl;
             cout << "  -> Level Up! Lv." << player->getLevel() << " -> Lv.";
             player->setLevel(player->getLevel() + 1);
             cout << player->getLevel() << endl;
-            cout << "  -> HP +10, MP +5, Attack +5" << endl << endl;
-
-            player->setHp(player->getHp() + 10);
+            cout << "  -> HP +10, MP +5, Attack +5" << endl;
+            player->setHp(min(player->getHp() + 10, player->getMaxHp()));
             player->setMp(player->getMp() + 5);
             player->setPower(player->getPower() + 5);
             player->setExp(player->getExp() - player->getMaxExp());
         }
 
         // 인벤토리에 아이템 추가
-        inventory.push_back(make_unique<RewardItem>(monster->getDropItemName(), "HP", 30, monster->getDropItemPrice(), 5));
+        addItem(monster->getDropItemName(), "HP", 30, monster->getDropItemPrice(), 1, false);
     }
     else {
         cout << "★ Defeat.." << endl;
         cout << "  -> " << player->getName() << " was attacked by " << monster->getName() << " and died." << endl;
-        cout << "Please try again!" << endl << endl;
+        cout << "Please try again!" << endl;
     }
 }
 
+/* 포션 제작소 관련 메서드*/
 // 전체 레시피 출력 메서드
 void ShowAllRecipes() {
     if (potionRecipe.empty()) {
@@ -298,8 +372,8 @@ int main() {
     Player* player = nullptr;   // 플레이어
 
     // 기본 포션 추가
-    inventory.push_back(make_unique<Potion>("HP Potion", "HP", 50, 50, 5));
-    inventory.push_back(make_unique<Potion>("MP Potion", "MP", 50, 50, 5));
+    addItem("HP Potion", "HP", 50, 50, 5, true);
+    addItem("MP Potion", "MP", 50, 50, 5, true);
 
     
     // 레시피 추가 
@@ -313,7 +387,7 @@ int main() {
 
     // 플레이어 정보 입력
     cout << "Enter your hero's name: ";
-    cin >> name;
+    getline(cin, name);
     cout << endl;
 
     inputStat(stat, "HP", "MP");

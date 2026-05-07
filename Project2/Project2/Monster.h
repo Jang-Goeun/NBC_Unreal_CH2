@@ -31,5 +31,5 @@ public:
 	void setDropItemPrice(int dropItemPrice) { this->dropItemPrice = dropItemPrice; }
     void setExpReward(int expReward) { this->expReward = expReward; }
 
-	virtual void attack(Player* player) = 0;							// 순수 가상 함수(공격)
+	virtual int attack(Player* player) = 0;							// 순수 가상 함수(공격)
 };
