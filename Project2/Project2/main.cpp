@@ -1,6 +1,7 @@
 ﻿#include <iostream>
 #include <string>
 #include <vector>
+#include <memory>
 #include <ctime>
 #include "Player.h"
 #include "Warrior.h" 
@@ -9,15 +10,11 @@
 #include "Thief.h"  
 #include "Monster.h"
 #include "Slime.h"
+#include "Item.h"
+#include "Potion.h"
+#include "RewardItem.h"
 
 using namespace std;
-
-// 인벤토리 구조체
-struct Item {
-    string name;
-    int price; 
-    void PrintInfo() const { cout << name << " " << "(" << price << "G)" << endl; }
-};
 
 // 포션 레시피 재료 정보 구조체
 struct Ingredient {
@@ -38,7 +35,7 @@ struct PotionRecipe {
     }
 };
 
-vector<Item> inventory;                 // 인벤토리
+vector<unique_ptr<Item>> inventory;                // 인벤토리
 vector<PotionRecipe> potionRecipe;      // 포션 레시피
 
 // 상태 정보 입력 메서드 
@@ -151,8 +148,7 @@ void battleResultPrint(bool battleResult, Monster* monster, Player* player) {
         }
 
         // 인벤토리에 아이템 추가
-        Item droppedItem = { monster->getDropItemName(), monster->getDropItemPrice() };
-        inventory.push_back(droppedItem);
+        inventory.push_back(make_unique<RewardItem>(monster->getDropItemName(), "HP", 30, monster->getDropItemPrice(), 5));
     }
     else {
         cout << "★ Defeat.." << endl;
@@ -299,10 +295,15 @@ int main() {
     // 변수 선언
     string name;                // 캐릭터 이름
     int stat[4] = { 0 };		// 캐릭터 스탯 { "HP", "MP", "공격력", "방어력" }
-    Player* player = nullptr;   // 플레이어  
+    Player* player = nullptr;   // 플레이어
 
+    // 기본 포션 추가
+    inventory.push_back(make_unique<Potion>("HP Potion", "HP", 50, 50, 5));
+    inventory.push_back(make_unique<Potion>("MP Potion", "MP", 50, 50, 5));
+
+    
     // 레시피 추가 
-    potionRecipe.push_back({ "HPPotion", {{"Herb", 1}, {"Clear Water", 1}} });
+    potionRecipe.push_back({ "HP Potion", {{"Herb", 1}, {"Clear Water", 1}} });
     potionRecipe.push_back({ "StaminaPotion", {{"Herb", 1}, {"Berry", 1}} });
 
     // 게임 프롤로그 시작 
@@ -396,11 +397,19 @@ int main() {
             }
             // 인벤토리 확인
             case 2: {
-                cout << "[ Inventory (" << inventory.size() << "/ 10) ]" << endl;
+                int inventorySize = 0;
 
-                for (int i = 1; i <= inventory.size(); i++) {
+                // 아이템 총 개수 구하기
+                for (int i = 0; i < inventory.size(); ++i) {
+                    inventorySize += inventory[i]->getCount();
+                }
+
+                cout << "[ Inventory (" << inventorySize << "/100) ]" << endl;
+
+                // 아이템 정보 출력
+                for (int i = 1; i <= inventory.size(); ++i) {
                     cout << i << ". ";
-                    inventory[i - 1].PrintInfo();
+                    inventory[i - 1]->printInfo();
                 }
                 break;
             }
@@ -417,7 +426,7 @@ int main() {
             }
             // 포션 사용
             case 4: {
-                player->upgradeCharacter();
+                player->upgradeCharacter(inventory[0], inventory[1]);
                 break;
             }
             // 이외의 숫자 선택

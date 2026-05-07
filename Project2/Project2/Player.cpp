@@ -1,19 +1,18 @@
 ﻿#include "Player.h"
 #include "Monster.h"
+#include "Item.h"
 #include <iostream>
 
 using namespace std;
 
 // 생성자 구현
-Player::Player(string name, int* stat, int level, int hpPotion, int mpPotion, int exp, int maxExp) {
+Player::Player(string name, int* stat, int level, int exp, int maxExp) {
     this->name = name;
     this->hp = stat[0];
     this->mp = stat[1];
     this->power = stat[2];
     this->defense = stat[3];
     this->level = level;
-    this->hpPotion = hpPotion;
-    this->mpPotion = mpPotion;
     this->exp = exp;
     this->maxExp = maxExp;
 }
@@ -28,12 +27,15 @@ void Player::printPlayerStatus() {
 
 // 캐릭터 능력치를 업그레이드하는 메서드
 // - bool* isGameStart
-void Player::upgradeCharacter() {
+void Player::upgradeCharacter(unique_ptr<Item>& hpPotion, unique_ptr<Item>& mpPotion) {
     bool isGameStart = false;
+    int hpPotionCount = hpPotion->getCount();
+    int mpPotionCount = mpPotion->getCount();
+
 
     // 스탯 관리 메뉴
     cout << "\n\n< Stat management >" << endl;
-    cout << "* You received " << hpPotion << " HP Potions and " << mpPotion << " MP Potions." << endl;
+    cout << "* You received " << hpPotionCount << " HP Potions and " << mpPotionCount << " MP Potions." << endl;
     cout << "============================================" << endl;
     cout << "< Character Upgrade Options >" << endl;
     cout << "1. HP UP    2. MP UP    3. Attack x2" << endl;
@@ -54,22 +56,22 @@ void Player::upgradeCharacter() {
 
             // 1. HP 20 증가
         case 1:
-            if (hpPotion == 0)
+            if (hpPotionCount == 0)
                 cout << "There is no HP potion." << endl;
             else {
-                hpPotion--;
-                cout << "* HP increased by 20. (HP Potion used: " << hpPotion << " left)." << endl;
+                cout << "* HP increased by 20. (HP Potion used: " << --hpPotionCount << " left)." << endl;
+                hpPotion->setCount(hpPotionCount);
                 hp += 20;
             }
             break;
 
             // 2. MP 20 증가
         case 2:
-            if (mpPotion == 0)
+            if (mpPotionCount == 0)
                 cout << "There is no MP potion." << endl;
             else {
-                mpPotion--;
-                cout << "* MP increased by 20. (MP Potion used: " << mpPotion << " left)." << endl;
+                cout << "* MP increased by 20. (MP Potion used: " << --mpPotionCount << " left)." << endl;
+                mpPotion->setCount(mpPotionCount);
                 mp += 20;
             }
             break;

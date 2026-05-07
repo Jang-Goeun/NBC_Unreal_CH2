@@ -5,7 +5,7 @@
 using namespace std;
 
 // 생성자 구현
-Warrior::Warrior(string name, int* stat, int level, int hpPotion, int mpPotion, int exp, int maxExp) : Player(name, stat, level, hpPotion, mpPotion, exp, maxExp) {
+Warrior::Warrior(string name, int* stat, int level, int exp, int maxExp) : Player(name, stat, level, exp, maxExp) {
     this->job = "Warrior";
     this->defense += 30; // 방어력 +30
 }
