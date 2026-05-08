@@ -1,6 +1,5 @@
 ﻿#pragma once
 #include <string>
-#include <memory>
 
 class Monster;
 class Item;
@@ -43,5 +42,5 @@ public:
 	void printPlayerStatus();							// 상태 출력 메서드
 	virtual int attack(Monster* monster) = 0;			// 순수 가상 함수(전투 공격)
 	virtual void attack() = 0;							// 순수 가상 함수(공격 메시지)
-    void upgradeCharacter(std::unique_ptr<Item>& hpPotion, std::unique_ptr<Item>& mpPotion);                            // 플레이어 능력치 업그레이드 메서드
+    void upgradeCharacter(Item* hpPotion, Item* mpPotion);                            // 플레이어 능력치 업그레이드 메서드
 };

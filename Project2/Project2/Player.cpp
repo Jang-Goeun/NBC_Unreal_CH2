@@ -37,11 +37,11 @@ void Player::printPlayerStatus()
 /*
  * @brief 캐릭터 능력치를 업그레이드하는 메서드 
  */
-void Player::upgradeCharacter(unique_ptr<Item>& hpPotion, unique_ptr<Item>& mpPotion)
+void Player::upgradeCharacter(Item* hpPotion, Item* mpPotion)
 {
     bool isGameStart = false;
-    int hpPotionCount = hpPotion->getCount();
-    int mpPotionCount = mpPotion->getCount();
+    int hpPotionCount = (hpPotion != nullptr) ? hpPotion->getCount() : 0;
+    int mpPotionCount = (mpPotion != nullptr) ? mpPotion->getCount() : 0;
 
     // 스탯 관리 메뉴
     while (!isGameStart)
@@ -79,7 +79,7 @@ void Player::upgradeCharacter(unique_ptr<Item>& hpPotion, unique_ptr<Item>& mpPo
             // 1. HP 20 증가
             case 1:
             {
-                if (hpPotionCount == 0) cout << "There is no HP potion." << endl;
+                if (hpPotion == nullptr || hpPotionCount == 0) cout << "There is no HP potion." << endl;
                 else
                 {
                     cout << "* HP increased by " << hpPotion->getEffectValue() << ". (HP Potion used: " << --hpPotionCount << " left)." << endl;
@@ -91,7 +91,7 @@ void Player::upgradeCharacter(unique_ptr<Item>& hpPotion, unique_ptr<Item>& mpPo
             // 2. MP 20 증가
             case 2:
             {
-                if (mpPotionCount == 0) cout << "There is no MP potion." << endl;
+                if (mpPotion == nullptr || mpPotionCount == 0) cout << "There is no MP potion." << endl;
                 else
                 {
                     cout << "* MP increased by " << mpPotion->getEffectValue() << ". (MP Potion used: " << --mpPotionCount << " left)." << endl;
@@ -104,14 +104,14 @@ void Player::upgradeCharacter(unique_ptr<Item>& hpPotion, unique_ptr<Item>& mpPo
             case 3:
             {
                 cout << "* Attack power doubled." << endl;
-                power += 2;
+                power *= 2;
                 break;
             }
             // 4. Defense 2배 증가
             case 4:
             {
                 cout << "* Defense power doubled." << endl;
-                defense += 2;
+                defense *= 2;
                 break;
             }
             // 5. 사용자 정보 출력

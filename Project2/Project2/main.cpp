@@ -15,6 +15,7 @@
 #include "Item.h"
 #include "Potion.h"
 #include "RewardItem.h"
+#include "Inventory.h"
 
 using namespace std;
 
@@ -41,7 +42,7 @@ struct PotionRecipe
     }
 };
 
-vector<unique_ptr<Item>> inventory;     // 인벤토리
+Inventory<Item*> playerInventory(10);
 vector<PotionRecipe> potionRecipe;      // 포션 레시피
 
 // @brief 콘솔 창 정리 메서드
@@ -90,15 +91,10 @@ void inputStat(int* stat, string inputStat1, string inputStat2)
  */
 void addItem(string name, string effectName, int effectValue, int price, int count, bool isPotion)
 {
-    // 인벤토리에 같은 이름을 가진 아이템이 있는지 확인
-    auto it = std::find_if(inventory.begin(), inventory.end(), [&](const std::unique_ptr<Item>& item)
-        { return item->getName() == name; });
-
-    // 아이템이 이미 있다면: 수량만 증가
-    if (it != inventory.end()) { (*it)->addCount(count); }
-    // 아이템이 없다면: 새로운 객체 생성하여 추가
-    else if(isPotion) { inventory.push_back(std::make_unique<Potion>(name, effectName, effectValue, price, count)); }
-    else { inventory.push_back(std::make_unique<RewardItem>(name, effectName, effectValue, price, count)); }
+    Item* newItem = nullptr;
+    if (isPotion) newItem = new Potion(name, effectName, effectValue, price, count);
+    else newItem = new Potion(name, effectName, effectValue, price, count);
+    playerInventory.AddItem(newItem);
 }
 
 /*
@@ -107,36 +103,35 @@ void addItem(string name, string effectName, int effectValue, int price, int cou
  */
 bool handleItemMenu(Player* player)
 {
-    if (inventory.empty())
+    if(playerInventory.GetSize() == 0)
     {
         cout << "Inventory is empty!" << endl;
-        return false; 
+        return false;
     }
 
     // 인벤토리 출력
-    cout << "[ Inventory ]" << endl;
-    for (int i = 0; i < inventory.size(); ++i)
-    {
-        cout << i + 1 << ". ";
-        inventory[i]->printInfo(); 
-    }
+    playerInventory.PrintAllItems();
 
     int choice;
     cout << "Choose: ";
     cin >> choice;
 
+    int index = choice - 1;
+    Item* selectedItem = playerInventory.GetItem(index);
+
     // 아이템 사용 처리
-    if (choice > 0 && choice <= inventory.size())
+    if (selectedItem != nullptr)
     {
-        if (inventory[choice - 1]->useItem(player))
+        if (selectedItem->useItem(player))
         {
-            inventory.erase(inventory.begin() + (choice - 1));
+            delete selectedItem;             // 메모리 해제
+            playerInventory.RemoveItem(index); // 효율적인 Swap-and-Pop 삭제
         }
-
-        return true; // 아이템 사용 성공
+        playerInventory.UpdateTotalCount();
+        return true;
     }
-
-    cout << "Action canceled." << endl;
+    cout << "\nAction canceled." << endl;
+    clearScreen();
 
     return false; // 아이템 사용 취소-턴 종료 안 함
 }
@@ -579,21 +574,7 @@ int main()
             // 인벤토리 확인
             case 2:
             {
-                int inventorySize = 0;
-
-                // 아이템 총 개수 구하기
-                for (int i = 0; i < inventory.size(); ++i)
-                    inventorySize += inventory[i]->getCount();
-
-                cout << "\n[ Inventory (" << inventorySize << "/100) ]" << endl;
-
-                // 아이템 정보 출력
-                for (int i = 1; i <= inventory.size(); ++i)
-                {
-                    cout << i << ". ";
-                    inventory[i - 1]->printInfo();
-                }
-
+                playerInventory.PrintAllItems();
                 clearScreen();
                 break;
             }
@@ -606,7 +587,34 @@ int main()
             // 스탯 업그레이드
             case 4:
             {
-                player->upgradeCharacter(inventory[0], inventory[1]);
+                Item* hpPotion = playerInventory.GetItem(playerInventory.FindItem("HP Potion"));
+                Item* mpPotion = playerInventory.GetItem(playerInventory.FindItem("MP Potion"));
+
+                player->upgradeCharacter(hpPotion, mpPotion);
+                playerInventory.UpdateTotalCount();
+
+                int currentHpIdx = playerInventory.FindItem("HP Potion");
+                if (currentHpIdx != -1)
+                {
+                    Item* item = playerInventory.GetItem(currentHpIdx);
+                    if (item->getCount() <= 0)
+                    {
+                        delete item;
+                        playerInventory.RemoveItem(currentHpIdx);
+                    }
+                }
+
+                int currentMpIdx = playerInventory.FindItem("MP Potion");
+                if (currentMpIdx != -1)
+                {
+                    Item* item = playerInventory.GetItem(currentMpIdx);
+                    if (item->getCount() <= 0)
+                    {
+                        delete item;
+                        playerInventory.RemoveItem(currentMpIdx);
+                    }
+                }
+
                 clearScreen();
                 break;
             }
@@ -626,6 +634,8 @@ int main()
         delete player;
         player = nullptr;
     }
+    for (int i = 0; i < playerInventory.GetSize(); ++i)
+        delete playerInventory.GetItem(i);
 
     return 0;
 }
