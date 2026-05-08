@@ -4,8 +4,11 @@
 
 using namespace std;
 
-// 생성자 구현
-Monster::Monster(string name, string dropItemName, int dropItemPrice, int hp, int power, int defense, int expReward) {
+/*
+ * @brief 생성자
+ */
+Monster::Monster(string name, string dropItemName, int dropItemPrice, int hp, int power, int defense, int expReward)
+{
     this->name = name;
     this->dropItemName = dropItemName;
     this->dropItemPrice = dropItemPrice;

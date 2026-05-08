@@ -3,7 +3,8 @@
 
 class Player;
 
-class Item {
+class Item
+{
 protected:
     std::string name;
     std::string effectName;

@@ -3,7 +3,8 @@
 
 class Player;
 
-class Monster {
+class Monster
+{
 protected:
 	std::string name, dropItemName;
 	int hp, power, defense, dropItemPrice, expReward;

@@ -4,8 +4,11 @@
 
 using namespace std;
 
-// 생성자 구현
-Slime::Slime(string name, string dropItemName, int dropItemPrice, int hp, int power, int defense, int expReward) : Monster(name, dropItemName, dropItemPrice, hp, power, defense, expReward) {
+/*
+ * @brief 생성자 구현
+ */
+Slime::Slime(string name, string dropItemName, int dropItemPrice, int hp, int power, int defense, int expReward) : Monster(name, dropItemName, dropItemPrice, hp, power, defense, expReward)
+{
     this->name = name;
     this->dropItemName = dropItemName;
     this->dropItemPrice = dropItemPrice;
@@ -15,8 +18,11 @@ Slime::Slime(string name, string dropItemName, int dropItemPrice, int hp, int po
     this->expReward = expReward;
 }
 
-// attack() 메서드 구현
-int Slime::attack(Player* player) {
+/*
+ * @brief attack() 메서드 구현
+ */
+int Slime::attack(Player* player)
+{
     int damage = power - player->getDefense();
     damage = (damage <= 0) ? 1 : damage;
 

@@ -5,7 +5,8 @@
 class Monster;
 class Item;
 
-class Player {
+class Player
+{
 protected:
 	std::string name, job;
 	int level, hp, mp, power, defense, exp, maxExp, maxHp;
