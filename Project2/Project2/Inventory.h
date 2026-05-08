@@ -70,6 +70,12 @@ public:
     void UpdateTotalCount();
 
     /**
+    *  @brief 인벤토리 확장 함수
+    *  @param newCapacity: 확장 크기
+    */
+    void Resize(int newCapacity);
+
+    /**
      * @brief 현재 인벤토리에 저장된 아이템의 종류 개수를 반환
      * @return int 현재 아이템 개수
      */
@@ -154,18 +160,18 @@ void Inventory<T>::AddItem(const T& item)
     }
     else
     {
+        if (totalCount_ >= capacity_)
+        {
+            std::cout << "\nAdding item... (" << totalCount_ << "/" << capacity_ << " full)" << std::endl;
+            std::cout << "-> Inventory auto-expanded! (" << capacity_ << " -> " << capacity_ * 2 << ")" << std::endl;
+            std::cout << "-> Item added" << std::endl;
+            Resize(capacity_ * 2);
+        }
+
         // 2. 없다면 새로 추가
-        if (size_ < capacity_)
-        {
-            pItems_[size_] = item;
-            totalCount_ += item->getCount();
-            ++size_;
-        }
-        else
-        {
-            std::cout << "Inventory is full!" << std::endl;
-            delete item; 
-        }
+        pItems_[size_] = item;
+        totalCount_ += item->getCount();
+        ++size_;
     }
 }
 
@@ -198,6 +204,25 @@ void Inventory<T>::UpdateTotalCount()
     totalCount_ = 0;
     for (int i = 0; i < size_; ++i)
         totalCount_ += pItems_[i]->getCount();
+}
+
+template <typename T>
+void Inventory<T>::Resize(int newCapacity)
+{
+    // 새 배열 할당
+    T* newPItems_ = new T[newCapacity];
+
+    // 기존 데이터 복사
+    for (int i = 0; i < size_; ++i)
+    {
+        newPItems_[i] = pItems_[i];
+    }
+
+    // 기존 배열 해제
+    delete[] pItems_;
+
+    pItems_ = newPItems_;
+    capacity_ = newCapacity;
 }
 
 template <typename T>
