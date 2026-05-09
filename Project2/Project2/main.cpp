@@ -42,7 +42,7 @@ struct PotionRecipe
     }
 };
 
-Inventory<Item*> playerInventory(10);
+Inventory<Item*> playerInventory(30);
 vector<PotionRecipe> potionRecipe;      // 포션 레시피
 
 // @brief 콘솔 창 정리 메서드
@@ -83,7 +83,6 @@ void inputStat(int* stat, string inputStat1, string inputStat2)
     else { stat[2] = stat1; stat[3] = stat2; }
 }
 
-
 // 인벤토리 관련 메서드
 /*
  * @brief 아이템 추가 메서드
@@ -93,7 +92,7 @@ void addItem(string name, string effectName, int effectValue, int price, int cou
 {
     Item* newItem = nullptr;
     if (isPotion) newItem = new Potion(name, effectName, effectValue, price, count);
-    else newItem = new Potion(name, effectName, effectValue, price, count);
+    else newItem = new RewardItem(name, effectName, effectValue, price, count);
     playerInventory.AddItem(newItem);
 }
 
@@ -113,27 +112,40 @@ bool handleItemMenu(Player* player)
     playerInventory.PrintAllItems();
 
     int choice;
-    cout << "Choose: ";
+    cout << "Choose (Only Potions are usable): ";
     cin >> choice;
 
     int index = choice - 1;
     Item* selectedItem = playerInventory.GetItem(index);
 
-    // 아이템 사용 처리
+    // 아이템 선택 처리
     if (selectedItem != nullptr)
     {
-        if (selectedItem->useItem(player))
-        {
-            delete selectedItem;             // 메모리 해제
-            playerInventory.RemoveItem(index); // 효율적인 Swap-and-Pop 삭제
-        }
-        playerInventory.UpdateTotalCount();
-        return true;
-    }
-    cout << "\nAction canceled." << endl;
-    clearScreen();
+        // Potion 클래스인지 확인 
+        Potion* potion = dynamic_cast<Potion*>(selectedItem);
 
-    return false; // 아이템 사용 취소-턴 종료 안 함
+        if (potion != nullptr)
+        {
+            if (selectedItem->useItem(player))
+            {
+                delete selectedItem;
+                playerInventory.RemoveItem(index);
+            }
+            playerInventory.UpdateTotalCount();
+            return true;
+        }
+        else
+        {
+            cout << "\nThis item is not a potion and cannot be used here!" << endl;
+        }
+    }
+    else
+    {
+        cout << "\nAction canceled or invalid selection." << endl;
+    }
+    
+    clearScreen();
+    return false; // 아이템 사용 취소 또는 포션 아님 - 턴 종료 안 함
 }
 
 // 전투 관련 메서드
@@ -253,7 +265,7 @@ void battleResultPrint(bool battleResult, Monster* monster, Player* player)
         }
 
         // 인벤토리에 아이템 추가
-        addItem(monster->getDropItemName(), "HP", 30, monster->getDropItemPrice(), 1, false);
+        addItem(monster->getDropItemName(), "", 0, monster->getDropItemPrice(), 1, false);
     }
     else
     {
@@ -267,7 +279,7 @@ void battleResultPrint(bool battleResult, Monster* monster, Player* player)
 /*
  * @brief 전체 레시피 출력 메서드
  */
-void ShowAllRecipes()
+void showAllRecipes()
 {
     if (potionRecipe.empty())
     {
@@ -288,7 +300,7 @@ void ShowAllRecipes()
 /*
  * @brief 이름이 일치하는 레시피 출력 메서드
  */
-void SearchByName(string name)
+void searchByName(string name)
 {
 
     bool found = false;
@@ -314,7 +326,7 @@ void SearchByName(string name)
 /*
  * @brief 키워드 재료를 포함한 레시피 전부 출력 메서드
  */
-void SearchByIngredient(string ingredient)
+void searchByIngredient(string ingredient)
 {
 
     bool found = false;
@@ -345,13 +357,96 @@ void SearchByIngredient(string ingredient)
 }
 
 /*
+ * @brief 포션 제작 메서드
+ */
+void craftingPotion(string potionName)
+{
+    bool found = false;
+    PotionRecipe recipe;
+
+    for (auto& r : potionRecipe)
+    {
+        // 1. 포션 레시피가 있는지 확인하기
+        if (potionName == r.name)
+        {
+            found = true;
+            recipe = r;
+
+            // 2. 포션 레시피가 있다면 레시피 재료를 소유하고 있는지 확인하기
+            for (auto& i : r.ingredients)
+            {
+                int itemIdx = playerInventory.FindItem(i.name);
+                // 아이템이 없거나 수량이 부족한 경우
+                if (itemIdx == -1 || playerInventory.GetItem(itemIdx)->getCount() < i.count)
+                {
+                    cout << "Not enough ingredients to make " << potionName << "." << endl;
+                    clearScreen();
+                    return;
+                }
+            }
+
+            break;
+        }
+    }
+
+    // 3. 재료가 모두 있다면 포션 만들고 재료들 사용 진행
+    // 3-1. 레시피를 찾지 못했을 경우
+    if (!found)
+    {
+        cout << "No potion found with that name." << endl;
+    }
+    // 3-2. 레시피를 찾고, 아이템을 모두 보유 중인 경우
+    else
+    {
+        cout << "\nStart making " << potionName << "!!" << endl;
+        cout << "Used ";
+        
+        for (size_t i = 0; i < recipe.ingredients.size(); ++i)
+        {
+            cout << recipe.ingredients[i].count << " " << recipe.ingredients[i].name;
+            if (i < recipe.ingredients.size() - 1)
+            {
+                cout << ", ";
+            }
+        }
+        cout << "." << endl;
+         
+        // 재료 소모
+        for (auto& i : recipe.ingredients)
+        {
+            int itemIdx = playerInventory.FindItem(i.name);
+            Item* item = playerInventory.GetItem(itemIdx);
+
+            item->setCount(item->getCount() - i.count);
+
+            if (item->getCount() <= 0)
+            {
+                delete item;
+                playerInventory.RemoveItem(itemIdx);
+            }
+        }
+
+        // 포션 추가 (레시피 이름에 따라 능력치 설정)
+        if (potionName == "HP Potion")
+            addItem("HP Potion", "HP", 50, 50, 1, true);
+        else if (potionName == "MP Potion")
+            addItem("MP Potion", "MP", 50, 50, 1, true);
+
+        playerInventory.UpdateTotalCount();
+        cout << "Successfully crafted: " << potionName << "!" << endl;
+    }
+
+    clearScreen();
+}
+
+/*
  * @brief 포션 제작소 메서드
  */
 void showAlchemyWorkshop()
 {
     int shopChoice;
     bool isValidSelection = false; // 0번 선택했을 경우만 True로 변경
-    string searchKeyword;
+    string keyword;
 
     clearScreen();
 
@@ -361,7 +456,8 @@ void showAlchemyWorkshop()
         cout << "1. Show all recipes" << endl;
         cout << "2. Search by potion name" << endl;
         cout << "3. Search by ingredient" << endl;
-        cout << "0. Go back" << endl << endl;
+        cout << "4. Crafting a Potion" << endl;
+        cout << "0. Go back\n" << endl;
         cout << "Choice: ";
         if (!(cin >> shopChoice))
         {
@@ -384,23 +480,31 @@ void showAlchemyWorkshop()
             case 1: 
             {
                 cout << "[ Potion Recipes ]" << endl;
-                ShowAllRecipes();
+                showAllRecipes();
                 break;
             }
             // 포션 이름으로 검색
             case 2: 
             {
                 cout << "Search potion name: ";
-                getline(cin >> ws, searchKeyword);
-                SearchByName(searchKeyword);
+                getline(cin >> ws, keyword);
+                searchByName(keyword);
                 break;
             }
             // 재료로 검색
             case 3: 
             {
                 cout << "Search ingredient: ";
-                getline(cin >> ws, searchKeyword);
-                SearchByIngredient(searchKeyword);
+                getline(cin >> ws, keyword);
+                searchByIngredient(keyword);
+                break;
+            }
+            // 포션 제작
+            case 4:
+            {
+                cout << "Potion name to create: ";
+                getline(cin >> ws, keyword);
+                craftingPotion(keyword);
                 break;
             }
             // 이외의 숫자 선택
@@ -413,6 +517,20 @@ void showAlchemyWorkshop()
         }
 
     } while (!isValidSelection);
+}
+
+/*
+ * @brief 기본 포션&레시피 추가
+ */
+void initDefaultData()
+{
+    potionRecipe.push_back({ "HP Potion", {{"Herb", 1}, {"Clear Water", 1}} });
+    potionRecipe.push_back({ "MP Potion", {{"Herb", 1}, {"Berry", 1}} });
+    addItem("HP Potion", "HP", 50, 50, 5, true);
+    addItem("MP Potion", "MP", 50, 50, 5, true);
+    addItem("Herb", "0", 0, 20, 5, false);
+    addItem("Berry", "0", 0, 20, 5, false);
+    addItem("Clear Water", "0", 0, 20, 5, false);
 }
 
 // 포션 수 변경(도전 과제1)
@@ -431,7 +549,6 @@ void setPotion(int count, int* p_HPPotion, int* p_MPPotion)
 }
 */
 
-
 int main()
 {
     srand((unsigned int)time(NULL));
@@ -441,11 +558,8 @@ int main()
     int stat[4] = { 0 };		// 캐릭터 스탯 { "HP", "MP", "공격력", "방어력" }
     Player* player = nullptr;   // 플레이어
 
-    // 기본 포션&레시피 추가
-    addItem("HP Potion", "HP", 50, 50, 5, true);
-    addItem("MP Potion", "MP", 50, 50, 5, true);
-    potionRecipe.push_back({ "HP Potion", {{"Herb", 1}, {"Clear Water", 1}} });
-    potionRecipe.push_back({ "StaminaPotion", {{"Herb", 1}, {"Berry", 1}} });
+    // 초기 데이터 추가
+    initDefaultData();
 
     // 1. 게임 프롤로그 시작 
     cout << "===========================================" << endl;
