@@ -952,13 +952,27 @@ int main()
     }
 
     // 3. 메모리 해제
+    // 플레이어 메모리 해제
     if (player != nullptr)
     {
         delete player;
         player = nullptr;
     }
+
+    // 인벤토리 메모리 해제
     for (int i = 0; i < playerInventory.GetSize(); ++i)
-        delete playerInventory.GetItem(i);
+    {
+        Item * item = playerInventory.GetItem(i);
+        if (item != nullptr) delete item;
+    }
+
+    // 몬스터 성 메모리 해제
+    for (auto m : slimeCastle) { if (m != nullptr) { delete m; } }
+    slimeCastle.clear();
+    for (auto m : goblinCastle) { if (m != nullptr) { delete m; } }
+    goblinCastle.clear();
+    for (auto m : orcCastle) { if (m != nullptr) { delete m; } }
+    orcCastle.clear();
 
     return 0;
 }
