@@ -58,7 +58,7 @@ void clearScreen()
 {
     cout << "\nPress any key..";
     _getch();
-    std::cout << "\033[2J\033[1;1H";
+    system("cls");
 }
 
 /*
@@ -74,7 +74,7 @@ void inputStat(int* stat, string inputStat1, string inputStat2)
 
     while (true)
     {
-        cout << "Enter " << inputStat1 << " and " << inputStat2 << ": ";
+        cout << "Enter " << inputStat1 << " and " << inputStat2 << "(50~100): ";
         if (!(cin >> stat1 >> stat2))
         {
             cin.clear();
@@ -83,12 +83,45 @@ void inputStat(int* stat, string inputStat1, string inputStat2)
             continue;
         }
 
-        if (stat1 > 50 && stat2 > 50) break;
-        else cout << inputStat1 << " or " << inputStat2 << " is too low. Try again." << endl;
+        if (stat1 >= 50 && stat2 >= 50 && stat1 <= 100 && stat2 <= 100) { break; }
+        else if ((stat1 > 100 && stat2 < 50) || (stat1 < 50 && stat2 > 100)) { cout << "The number is outside the input range. Try again." << endl; }
+        else if (stat1 <  50 || stat2 < 50) { cout << inputStat1 << " or " << inputStat2 << " is too low. Try again." << endl; }
+        else if (stat1 > 100 || stat2 > 100) { cout << inputStat1 << " or " << inputStat2 << " is too high. Try again." << endl; }
     }
 
     if (inputStat1 == "HP") { stat[0] = stat1; stat[1] = stat2; }
     else { stat[2] = stat1; stat[3] = stat2; }
+}
+
+// 레벨 및 게임 종료 관련 메서드
+/*
+ * @brief 레벨 업 메서드
+ */
+void levelUp(Player* player)
+{
+    player->setLevel(player->getLevel() + 1);
+    int currentLv = player->getLevel();
+    int bonusATK = 0, bonusDEF = 0;
+
+    // 구간별 차등 보상
+    if (currentLv <= 5) { bonusATK = 3; bonusDEF = 2;; }
+    else if (currentLv <= 10) { bonusATK = 5; bonusDEF = 3; }
+    else { bonusATK = 8; bonusDEF = 5; }
+
+    // 5레벨마다 특별 보너스
+    if (currentLv % 5 == 0)
+    {
+        bonusATK += 5;
+        cout << "★ Special Breakthrough Bonus!" << endl;
+        cout << "-> Attack +5" << endl;
+    }
+
+    player->setPower(player->getPower() + bonusATK);
+    player->setDefense(player->getDefense() + bonusDEF);
+    player->setHp(player->getMaxHp()); // 레벨업 시 체력 
+    cout << "\n... Level up condition met" << endl;
+    cout << "Level Up! Lv." << currentLv << endl;
+    cout << "-> Attack +" << bonusATK << ", defense +" << bonusDEF  << ", HP(Fully Restored!)\n" << endl;
 }
 
 // 인벤토리 관련 메서드
@@ -156,6 +189,247 @@ bool handleItemMenu(Player* player)
     return false; // 아이템 사용 취소 또는 포션 아님 - 턴 종료 안 함
 }
 
+// 포션 제작소 관련 메서드
+/*
+ * @brief 전체 레시피 출력 메서드
+ */
+void showAllRecipes()
+{
+    if (potionRecipe.empty())
+    {
+        cout << "The recipe book is empty..." << endl << endl;
+        return;
+    }
+
+    for (auto& r : potionRecipe)
+    {
+        cout << "-> " << r.name << ": ";
+        r.PrintRecipe();
+        cout << endl;
+    }
+}
+
+/*
+ * @brief 이름이 일치하는 레시피 출력 메서드
+ */
+void searchByName(string name)
+{
+
+    bool found = false;
+
+    for (auto& r : potionRecipe)
+    {
+        if (name == r.name)
+        {
+            cout << "-> " << name << ": ";
+            r.PrintRecipe();
+            cout << endl;
+            found = true;
+            break;
+        }
+    }
+
+    // 찾지 못했을 경우
+    if (!found) cout << "No potion found with that name." << endl;
+
+    clearScreen();
+}
+
+/*
+ * @brief 키워드 재료를 포함한 레시피 전부 출력 메서드
+ */
+void searchByIngredient(string ingredient)
+{
+
+    bool found = false;
+    int count = 0;
+
+    for (auto& r : potionRecipe)
+    {
+        for (auto& i : r.ingredients)
+        {
+            if (ingredient == i.name)
+            {
+                cout << "-> " << r.name << " (";
+                r.PrintRecipe();
+                cout << ")" << endl;
+                found = true;
+                count++;
+                break;
+            }
+        }
+    }
+
+    // 찾지 못했을 경우
+    if (!found) cout << "No potion found with that ingredient." << endl;
+    // 찾았을 경우
+    else cout << "Found " << count << " recipes." << endl;
+
+    clearScreen();
+}
+
+/*
+ * @brief 포션 제작 메서드
+ */
+void craftingPotion(string potionName)
+{
+    bool found = false;
+    PotionRecipe recipe;
+
+    for (auto& r : potionRecipe)
+    {
+        // 1. 포션 레시피가 있는지 확인하기
+        if (potionName == r.name)
+        {
+            found = true;
+            recipe = r;
+
+            // 2. 포션 레시피가 있다면 레시피 재료를 소유하고 있는지 확인하기
+            for (auto& i : r.ingredients)
+            {
+                int itemIdx = playerInventory.FindItem(i.name);
+                // 아이템이 없거나 수량이 부족한 경우
+                if (itemIdx == -1 || playerInventory.GetItem(itemIdx)->getCount() < i.count)
+                {
+                    cout << "Not enough ingredients to make " << potionName << "." << endl;
+                    return;
+                }
+            }
+
+            break;
+        }
+    }
+
+    // 3. 재료가 모두 있다면 포션 만들고 재료들 사용 진행
+    // 3-1. 레시피를 찾지 못했을 경우
+    if (!found)
+    {
+        cout << "No potion found with that name." << endl;
+    }
+    // 3-2. 레시피를 찾고, 아이템을 모두 보유 중인 경우
+    else
+    {
+        cout << "\nStart making " << potionName << "!!" << endl;
+        cout << "Used ";
+
+        for (size_t i = 0; i < recipe.ingredients.size(); ++i)
+        {
+            cout << recipe.ingredients[i].count << " " << recipe.ingredients[i].name;
+            if (i < recipe.ingredients.size() - 1)
+            {
+                cout << ", ";
+            }
+        }
+        cout << "." << endl;
+
+        // 재료 소모
+        for (auto& i : recipe.ingredients)
+        {
+            int itemIdx = playerInventory.FindItem(i.name);
+            Item* item = playerInventory.GetItem(itemIdx);
+
+            item->setCount(item->getCount() - i.count);
+
+            if (item->getCount() <= 0)
+            {
+                delete item;
+                playerInventory.RemoveItem(itemIdx);
+            }
+        }
+
+        // 포션 추가 (레시피 이름에 따라 능력치 설정)
+        if (potionName == "HP Potion")
+            addItem("HP Potion", "HP", 50, 50, 1, true);
+        else if (potionName == "MP Potion")
+            addItem("MP Potion", "MP", 50, 50, 1, true);
+
+        playerInventory.UpdateTotalCount();
+        cout << "Successfully crafted: " << potionName << "!" << endl;
+    }
+}
+
+/*
+ * @brief 포션 제작소 메서드
+ */
+void showAlchemyWorkshop()
+{
+    int shopChoice;
+    bool isValidSelection = false; // 0번 선택했을 경우만 True로 변경
+    string keyword;
+
+    clearScreen();
+
+    do
+    {
+        cout << "=== Potion Shop ===" << endl;
+        cout << "1. Show all recipes" << endl;
+        cout << "2. Search by potion name" << endl;
+        cout << "3. Search by ingredient" << endl;
+        cout << "4. Crafting a Potion" << endl;
+        cout << "0. Go back\n" << endl;
+        cout << "Choice: ";
+        if (!(cin >> shopChoice))
+        {
+            cin.clear();
+            cin.ignore(1000, '\n');
+            shopChoice = -1;
+        }
+        cout << endl;
+
+        switch (shopChoice)
+        {
+            // 되돌아가기
+            case 0:
+            {
+                isValidSelection = true;
+                clearScreen();
+                break;
+            }
+            // 전체 레시피 보기
+            case 1:
+            {
+                cout << "[ Potion Recipes ]" << endl;
+                showAllRecipes();
+                clearScreen();
+                break;
+            }
+            // 포션 이름으로 검색
+            case 2:
+            {
+                cout << "Search potion name: ";
+                getline(cin >> ws, keyword);
+                searchByName(keyword);
+                break;
+            }
+            // 재료로 검색
+            case 3:
+            {
+                cout << "Search ingredient: ";
+                getline(cin >> ws, keyword);
+                searchByIngredient(keyword);
+                break;
+            }
+            // 포션 제작
+            case 4:
+            {
+                cout << "Potion name to create: ";
+                getline(cin >> ws, keyword);
+                craftingPotion(keyword);
+                clearScreen();
+                break;
+            }
+            // 이외의 숫자 선택
+            default:
+            {
+                cout << "Invalid choice. Please select again!" << endl;
+                clearScreen();
+                break;
+            }
+        }
+
+    } while (!isValidSelection);
+}
+
 // 전투 관련 메서드
 /*
  * @brief 플레이어 공격 처리 메서드
@@ -167,7 +441,7 @@ bool handlePlayerAttack(Player* player, Monster* monster)
 
     cout << monster->getName() << " HP: " << monster->getHp() << " -> ";
     monster->setHp(monster->getHp() - damage);
-    cout << monster->getHp() << (monster->getHp() <= 0 ? " (Dead)" : "") << endl;
+    cout << monster->getHp() << (monster->getHp() <= 0 ? " (Dead)" : "\n") << endl;
 
     return monster->getHp() <= 0;
 }
@@ -213,19 +487,46 @@ bool battle(Player* player, Monster* monster)
         cout << "\n--- " << playerName << " Turn ---" << endl;
         cout << "1. Attack" << endl;
         cout << "2. Use Item" << endl;
+        cout << "3. Crafting a Potion" << endl;
         cout << "Choose: ";
-        cin >> action;
+
+        // 입력 유효성 검사
+        if (!(cin >> action))
+        {
+            cin.clear();
+            cin.ignore(1000, '\n');
+            cout << "\nInvalid input. Please enter a number (1-3)." << endl;
+            continue;
+        }
+
         cout << endl;
 
-        // 전투
-        if (action == 1)
+        while (!turnEnd)
         {
-            if (handlePlayerAttack(player, monster)) return true;
-            turnEnd = true;
+            // 전투
+            if (action == 1)
+            {
+                if (handlePlayerAttack(player, monster)) return true;
+                turnEnd = true;
+            }
+            // 아이템 사용 (아이템 사용 시에만 턴 종료)
+            else if (action == 2) { turnEnd = handleItemMenu(player); }
+            // 포션 제작
+            else if (action == 3)
+            {
+                string keyword;
+                showAllRecipes();
+
+                cout << "Potion name to create: ";
+                getline(cin >> ws, keyword);
+
+                craftingPotion(keyword);
+                turnEnd = true;
+
+                cout << endl;
+            }
+            else { cout << "Invalid choice. Please select again!" << endl; }
         }
-        // 아이템 사용 (아이템 사용 시에만 턴 종료)
-        else if (action == 2) { turnEnd = handleItemMenu(player); }
-        else { cout << "Invalid choice. Please select again!" << endl; }
 
         // 몬스터 반격
         if (turnEnd && monster->getHp() > 0)
@@ -259,17 +560,10 @@ void battleResultPrint(bool battleResult, Monster* monster, Player* player)
         cout << "  -> +" << monster->getExpReward() << " EXP! (EXP: " << player->getExp() << "/" << player->getMaxExp() << ")" << endl;
 
         // 레벨업
-        if (player->getExp() >= player->getMaxExp())
+        while (player->getExp() >= player->getMaxExp())
         {
-            cout << "\n... Level up condition met" << endl;
-            cout << "  -> Level Up! Lv." << player->getLevel() << " -> Lv.";
-            player->setLevel(player->getLevel() + 1);
-            cout << player->getLevel() << endl;
-            cout << "  -> HP +10, MP +5, Attack +5" << endl;
-            player->setHp(min(player->getHp() + 10, player->getMaxHp()));
-            player->setMp(player->getMp() + 5);
-            player->setPower(player->getPower() + 5);
             player->setExp(player->getExp() - player->getMaxExp());
+            levelUp(player);
         }
 
         // 인벤토리에 아이템 추가
@@ -277,13 +571,18 @@ void battleResultPrint(bool battleResult, Monster* monster, Player* player)
     }
     else
     {
-        cout << "\n\n★ Defeat.." << endl;
+        cout << "★ Defeat.." << endl;
         cout << "  -> " << player->getName() << " was attacked by " << monster->getName() << " and died." << endl;
         cout << "Please try again!" << endl;
     }
 }
 
 // 던전 관련 메서드
+/*
+ * @brief 던전 맵 선택 메서드
+ * @param player: 플레이어
+ * 맵 선택 및 전투 유지 or 메인으로 돌아가기 선택 진행
+ */
 void enterDungeon(Player* player)
 {
     int castleChoice;
@@ -351,6 +650,7 @@ void enterDungeon(Player* player)
             }
 
             clearScreen();
+
             // 더 탐험할지 선택
             int moveChoice;
             bool isMoveValid = false;
@@ -392,250 +692,6 @@ void enterDungeon(Player* player)
     }
 }
 
-// 포션 제작소 관련 메서드
-/*
- * @brief 전체 레시피 출력 메서드
- */
-void showAllRecipes()
-{
-    if (potionRecipe.empty())
-    {
-        cout << "The recipe book is empty..." << endl << endl;
-        return;
-    }
-
-    for (auto& r : potionRecipe)
-    {
-        cout << "-> " << r.name << ": ";
-        r.PrintRecipe();
-        cout << endl;
-    }
-
-    clearScreen();
-}
-
-/*
- * @brief 이름이 일치하는 레시피 출력 메서드
- */
-void searchByName(string name)
-{
-
-    bool found = false;
-
-    for (auto& r : potionRecipe)
-    {
-        if (name == r.name)
-        {
-            cout << "-> " << name << ": ";
-            r.PrintRecipe();
-            cout << endl;
-            found = true;
-            break;
-        }
-    }
-
-    // 찾지 못했을 경우
-    if(!found) cout << "No potion found with that name." << endl;
-
-    clearScreen();
-}
-
-/*
- * @brief 키워드 재료를 포함한 레시피 전부 출력 메서드
- */
-void searchByIngredient(string ingredient)
-{
-
-    bool found = false;
-    int count = 0;
-
-    for (auto& r : potionRecipe)
-    {
-        for (auto& i : r.ingredients)
-        {
-            if (ingredient == i.name)
-            {
-                cout << "-> " << r.name << " (";
-                r.PrintRecipe();
-                cout << ")" << endl;
-                found = true;
-                count++;
-                break;
-            }
-        }
-    }
-
-    // 찾지 못했을 경우
-    if (!found) cout << "No potion found with that ingredient." << endl;
-    // 찾았을 경우
-    else cout << "Found " << count << " recipes." << endl;
-
-    clearScreen();
-}
-
-/*
- * @brief 포션 제작 메서드
- */
-void craftingPotion(string potionName)
-{
-    bool found = false;
-    PotionRecipe recipe;
-
-    for (auto& r : potionRecipe)
-    {
-        // 1. 포션 레시피가 있는지 확인하기
-        if (potionName == r.name)
-        {
-            found = true;
-            recipe = r;
-
-            // 2. 포션 레시피가 있다면 레시피 재료를 소유하고 있는지 확인하기
-            for (auto& i : r.ingredients)
-            {
-                int itemIdx = playerInventory.FindItem(i.name);
-                // 아이템이 없거나 수량이 부족한 경우
-                if (itemIdx == -1 || playerInventory.GetItem(itemIdx)->getCount() < i.count)
-                {
-                    cout << "Not enough ingredients to make " << potionName << "." << endl;
-                    clearScreen();
-                    return;
-                }
-            }
-
-            break;
-        }
-    }
-
-    // 3. 재료가 모두 있다면 포션 만들고 재료들 사용 진행
-    // 3-1. 레시피를 찾지 못했을 경우
-    if (!found)
-    {
-        cout << "No potion found with that name." << endl;
-    }
-    // 3-2. 레시피를 찾고, 아이템을 모두 보유 중인 경우
-    else
-    {
-        cout << "\nStart making " << potionName << "!!" << endl;
-        cout << "Used ";
-        
-        for (size_t i = 0; i < recipe.ingredients.size(); ++i)
-        {
-            cout << recipe.ingredients[i].count << " " << recipe.ingredients[i].name;
-            if (i < recipe.ingredients.size() - 1)
-            {
-                cout << ", ";
-            }
-        }
-        cout << "." << endl;
-         
-        // 재료 소모
-        for (auto& i : recipe.ingredients)
-        {
-            int itemIdx = playerInventory.FindItem(i.name);
-            Item* item = playerInventory.GetItem(itemIdx);
-
-            item->setCount(item->getCount() - i.count);
-
-            if (item->getCount() <= 0)
-            {
-                delete item;
-                playerInventory.RemoveItem(itemIdx);
-            }
-        }
-
-        // 포션 추가 (레시피 이름에 따라 능력치 설정)
-        if (potionName == "HP Potion")
-            addItem("HP Potion", "HP", 50, 50, 1, true);
-        else if (potionName == "MP Potion")
-            addItem("MP Potion", "MP", 50, 50, 1, true);
-
-        playerInventory.UpdateTotalCount();
-        cout << "Successfully crafted: " << potionName << "!" << endl;
-    }
-
-    clearScreen();
-}
-
-/*
- * @brief 포션 제작소 메서드
- */
-void showAlchemyWorkshop()
-{
-    int shopChoice;
-    bool isValidSelection = false; // 0번 선택했을 경우만 True로 변경
-    string keyword;
-
-    clearScreen();
-
-    do
-    {
-        cout << "=== Potion Shop ===" << endl;
-        cout << "1. Show all recipes" << endl;
-        cout << "2. Search by potion name" << endl;
-        cout << "3. Search by ingredient" << endl;
-        cout << "4. Crafting a Potion" << endl;
-        cout << "0. Go back\n" << endl;
-        cout << "Choice: ";
-        if (!(cin >> shopChoice))
-        {
-            cin.clear();
-            cin.ignore(1000, '\n');
-            shopChoice = -1;
-        }
-        cout << endl;
-
-        switch (shopChoice)
-        {
-            // 되돌아가기
-            case 0:
-            {
-                isValidSelection = true;
-                clearScreen();
-                break;
-            }
-            // 전체 레시피 보기
-            case 1: 
-            {
-                cout << "[ Potion Recipes ]" << endl;
-                showAllRecipes();
-                break;
-            }
-            // 포션 이름으로 검색
-            case 2: 
-            {
-                cout << "Search potion name: ";
-                getline(cin >> ws, keyword);
-                searchByName(keyword);
-                break;
-            }
-            // 재료로 검색
-            case 3: 
-            {
-                cout << "Search ingredient: ";
-                getline(cin >> ws, keyword);
-                searchByIngredient(keyword);
-                break;
-            }
-            // 포션 제작
-            case 4:
-            {
-                cout << "Potion name to create: ";
-                getline(cin >> ws, keyword);
-                craftingPotion(keyword);
-                break;
-            }
-            // 이외의 숫자 선택
-            default: 
-            {
-                cout << "Invalid choice. Please select again!" << endl;
-                clearScreen();
-                break;
-            }
-        }
-
-    } while (!isValidSelection);
-}
-
 /*
  * @brief 기본 포션&레시피 추가
  */
@@ -655,17 +711,17 @@ void initDefaultData()
  */
 void initCastles()
 {
-    slimeCastle.push_back(new Slime("Green Slime", "tackles you!", "Clear Water", 20, 10, 5, 20, 10));
-    slimeCastle.push_back(new Slime("Big Slime", "bounces on you!", "Herb", 40, 20, 70, 50, 25));
-    slimeCastle.push_back(new Slime("King Slime", "spits sticky acid!", "Berry", 60, 40, 90, 70, 60));
+    slimeCastle.push_back(new Slime("Green Slime", "tackles you!", "Clear Water", 20, 80, 55, 50, 40));
+    slimeCastle.push_back(new Slime("Big Slime", "bounces on you!", "Herb", 40, 180, 65, 60, 80));
+    slimeCastle.push_back(new Slime("King Slime", "spits sticky acid!", "Berry", 60, 450, 85, 75, 200));
 
-    goblinCastle.push_back(new Goblin("Goblin Scout", "stabs with a dagger!", "Clear Water", 20, 15, 8, 30, 15));
-    goblinCastle.push_back(new Goblin("Goblin Warrior", "kicks your shin!", "Herb", 40, 25, 70, 50, 25));
-    goblinCastle.push_back(new Goblin("Goblin Shaman", "throws a sharp rock!", "Berry", 60, 50, 100, 70, 60));
+    goblinCastle.push_back(new Goblin("Goblin Scout", "stabs with a dagger!", "Clear Water", 20, 70, 65, 55, 50));
+    goblinCastle.push_back(new Goblin("Goblin Warrior", "kicks your shin!", "Herb", 40, 150, 75, 65, 120));
+    goblinCastle.push_back(new Goblin("Goblin Shaman", "throws a sharp rock!", "Berry", 60, 400, 95, 80, 300));
 
-    orcCastle.push_back(new Orc("Orc Grunt", "punches you hard!", "Clear Water", 20, 30, 20, 50, 30));
-    orcCastle.push_back(new Orc("Orc Warrior", "slams you with a shield!", "Herb", 40, 50, 70, 50, 25));
-    orcCastle.push_back(new Orc("Orc Warlord", "swings a heavy axe!", "Berry", 60, 100, 110, 70, 60));
+    orcCastle.push_back(new Orc("Orc Grunt", "punches you hard!", "Clear Water", 20, 120, 70, 65, 60));
+    orcCastle.push_back(new Orc("Orc Warrior", "slams you with a shield!", "Herb", 40, 250, 85, 75, 150));
+    orcCastle.push_back(new Orc("Orc Warlord", "swings a heavy axe!", "Berry", 60, 800, 100, 90, 600));
 }
 
 // 포션 수 변경(도전 과제1)
@@ -786,6 +842,17 @@ int main()
 
     while (!isGameOver)
     {
+        // 레벨 17 달성 시 게임 종료
+        if (player->getLevel() >= 17)
+        {
+            cout << "===========================================" << endl;
+            cout << "   YOU HAVE REACHED LEVEL 17!              " << endl;
+            cout << "   ALL MONSTERS DEFEATED, PEACE RESTORED!  " << endl;
+            cout << "   CONGRATULATIONS, GREAT HERO!            " << endl;
+            cout << "===========================================" << endl;
+            isGameOver = true;
+            break;
+        }
         int menuChoice;
 
         cout << "=== Main Menu ===" << endl;

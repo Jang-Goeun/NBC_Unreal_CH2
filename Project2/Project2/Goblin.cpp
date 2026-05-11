@@ -1,6 +1,7 @@
 ﻿#include "Goblin.h"
 #include "Player.h"
 #include <iostream>
+#include <cstdlib>
 
 using namespace std;
 
@@ -25,7 +26,9 @@ Goblin::Goblin(string name, string attackComment, string dropItemName, int dropI
 int Goblin::attack(Player* player)
 {
     int damage = power - player->getDefense();
-    damage = (damage <= 0) ? 1 : damage;
+    int minDamage = (power * 0.1) + (rand() % 4);
+
+    if (damage < minDamage) { damage = minDamage; }
 
     cout << "[" << name << "] " << attackComment << " -> " << damage << " damage to " << player->getName() << "!" << endl;
 

@@ -1,6 +1,7 @@
 ﻿#include "Slime.h"
 #include "Player.h"
 #include <iostream>
+#include <cstdlib>
 
 using namespace std;
 
@@ -25,7 +26,9 @@ Slime::Slime(string name, string attackComment, string dropItemName, int dropIte
 int Slime::attack(Player* player)
 {
     int damage = power - player->getDefense();
-    damage = (damage <= 0) ? 1 : damage;
+    int minDamage = (power * 0.1) + (rand() % 4);
+
+    if (damage < minDamage) { damage = minDamage; }
 
     cout << "[" << name << "] " << attackComment << " -> " << damage << " damage to " << player->getName() << "!" << endl;
 
