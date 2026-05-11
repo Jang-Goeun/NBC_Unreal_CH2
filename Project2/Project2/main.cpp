@@ -12,6 +12,9 @@
 #include "Thief.h"  
 #include "Monster.h"
 #include "Slime.h"
+#include "Goblin.h"
+#include "Orc.h"
+#include "Slime.h"
 #include "Item.h"
 #include "Potion.h"
 #include "RewardItem.h"
@@ -42,8 +45,13 @@ struct PotionRecipe
     }
 };
 
+// 전역 변수 선언
 Inventory<Item*> playerInventory(30);
 vector<PotionRecipe> potionRecipe;      // 포션 레시피
+vector<Monster*> slimeCastle;
+vector<Monster*> goblinCastle;
+vector<Monster*> orcCastle;
+int slimeProgress = 0, goblinProgress = 0, orcProgress = 0; // 각 성의 진행 단계를 저장하는 변수 (0: 일반, 1: 중간, 2: 보스)
 
 // @brief 콘솔 창 정리 메서드
 void clearScreen()
@@ -272,6 +280,115 @@ void battleResultPrint(bool battleResult, Monster* monster, Player* player)
         cout << "\n\n★ Defeat.." << endl;
         cout << "  -> " << player->getName() << " was attacked by " << monster->getName() << " and died." << endl;
         cout << "Please try again!" << endl;
+    }
+}
+
+// 던전 관련 메서드
+void enterDungeon(Player* player)
+{
+    int castleChoice;
+    bool isValid = false;
+
+    // 던전 선택
+    do
+    {
+        clearScreen();
+        cout << "=== Select Castle ===" << endl;
+        cout << "1. Slime Castle (Progress: " << slimeProgress << "/3)" << endl;
+        cout << "2. Goblin Castle (Progress: " << goblinProgress << "/3)" << endl;
+        cout << "3. Orc Castle (Progress: " << orcProgress << "/3)" << endl;
+        cout << "0. Go Back" << endl;
+        cout << "Choice: ";
+        
+        // 입력 유효성 검사
+        if (!(cin >> castleChoice))
+        {
+            cin.clear(); 
+            cin.ignore(1000, '\n'); 
+            cout << "\nInvalid input. Please enter a number (0-3)." << endl;
+            continue;
+        }
+
+        // 범위 검사 (0~3 사이인지 확인)
+        if (castleChoice >= 0 && castleChoice <= 3) { isValid = true; }
+        else {
+            cout << "\nInvalid selection. Please choose between 0 and 3." << endl;
+            continue;
+        }
+    } while (!isValid);
+
+    vector<Monster*>* selectedCastle = nullptr;
+    int* currentProgress = nullptr;
+
+    if (castleChoice == 1) { selectedCastle = &slimeCastle; currentProgress = &slimeProgress; }
+    else if (castleChoice == 2) { selectedCastle = &goblinCastle; currentProgress = &goblinProgress; }
+    else if (castleChoice == 3) { selectedCastle = &orcCastle; currentProgress = &orcProgress; }
+    else if (castleChoice == 0) { return; }
+
+    if (currentProgress == nullptr || selectedCastle == nullptr) { return; }
+
+    if (*currentProgress >= 3)
+    {
+        cout << "\nThis castle is already conquered!" << endl;
+        return;
+    }
+
+    // 성 내부 탐험
+    while (*currentProgress < 3)
+    {
+        Monster * monster = (*selectedCastle)[*currentProgress];
+        cout << "\n>>> Exploring... A " << monster->getName() << " appears!" << endl;
+
+        if (battle(player, monster))
+        {
+            battleResultPrint(true, monster, player);
+            (*currentProgress)++; 
+            
+            if (*currentProgress == 3)
+            {
+                cout << "\n★ CONQUERED! You defeated the Boss of this castle!" << endl;
+                break;
+            }
+
+            clearScreen();
+            // 더 탐험할지 선택
+            int moveChoice;
+            bool isMoveValid = false;
+
+            do
+            {
+                cout << "[ Battle Won! ]" << endl;
+                cout << "1. Keep Exploring (Next: " << (*selectedCastle)[*currentProgress]->getName() << ")" << endl;
+                cout << "0. Go To Main" << endl;
+                cout << "Choice: ";
+
+                if (!(cin >> moveChoice))
+                {
+                    cin.clear();
+                    cin.ignore(1000, '\n');
+                    cout << "Invalid input. Please enter 1 or 2." << endl;
+                    continue;
+                }
+
+                if (moveChoice == 1 || moveChoice == 0) { isMoveValid = true; }
+                else
+                {
+                    cout << "\nInvalid selection. Please choose 1 or 0." << endl;
+                    clearScreen();
+                }
+            } while (!isMoveValid);
+
+            if (moveChoice == 0)
+            {
+                cout << "\nGoing to Main..." << endl;
+                break;
+            }
+        }
+        else
+        {
+            battleResultPrint(false, monster, player);
+            break; // 사망 시 루프 탈출
+        }
     }
 }
 
@@ -528,9 +645,27 @@ void initDefaultData()
     potionRecipe.push_back({ "MP Potion", {{"Herb", 1}, {"Berry", 1}} });
     addItem("HP Potion", "HP", 50, 50, 5, true);
     addItem("MP Potion", "MP", 50, 50, 5, true);
-    addItem("Herb", "0", 0, 20, 5, false);
-    addItem("Berry", "0", 0, 20, 5, false);
-    addItem("Clear Water", "0", 0, 20, 5, false);
+    addItem("Herb", "0", 0, 20, 1, false);
+    addItem("Berry", "0", 0, 20, 1, false);
+    addItem("Clear Water", "0", 0, 20, 1, false);
+}
+
+/*
+ * @brief 몬스터 생성
+ */
+void initCastles()
+{
+    slimeCastle.push_back(new Slime("Green Slime", "tackles you!", "Clear Water", 20, 10, 5, 20, 10));
+    slimeCastle.push_back(new Slime("Big Slime", "bounces on you!", "Herb", 40, 20, 70, 50, 25));
+    slimeCastle.push_back(new Slime("King Slime", "spits sticky acid!", "Berry", 60, 40, 90, 70, 60));
+
+    goblinCastle.push_back(new Goblin("Goblin Scout", "stabs with a dagger!", "Clear Water", 20, 15, 8, 30, 15));
+    goblinCastle.push_back(new Goblin("Goblin Warrior", "kicks your shin!", "Herb", 40, 25, 70, 50, 25));
+    goblinCastle.push_back(new Goblin("Goblin Shaman", "throws a sharp rock!", "Berry", 60, 50, 100, 70, 60));
+
+    orcCastle.push_back(new Orc("Orc Grunt", "punches you hard!", "Clear Water", 20, 30, 20, 50, 30));
+    orcCastle.push_back(new Orc("Orc Warrior", "slams you with a shield!", "Herb", 40, 50, 70, 50, 25));
+    orcCastle.push_back(new Orc("Orc Warlord", "swings a heavy axe!", "Berry", 60, 100, 110, 70, 60));
 }
 
 // 포션 수 변경(도전 과제1)
@@ -560,6 +695,7 @@ int main()
 
     // 초기 데이터 추가
     initDefaultData();
+    initCastles();
 
     // 1. 게임 프롤로그 시작 
     cout << "===========================================" << endl;
@@ -679,9 +815,7 @@ int main()
             // 던전 입장
             case 1:
             {
-                Monster * monster = (rand() % 2 == 0) ? new Slime("Slime", "Slime Jelly", 30) : new Slime("King Slime", "Crown", 100, 60, 40 , 30, 50);
-                battleResultPrint(battle(player, monster), monster, player);
-                delete monster; 
+                enterDungeon(player);
                 if (player->getHp() <= 0) isGameOver = true;
                 clearScreen();
                 break;

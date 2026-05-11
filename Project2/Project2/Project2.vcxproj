@@ -124,10 +124,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Archer.cpp" />
+    <ClCompile Include="Goblin.cpp" />
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="Magician.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Monster.cpp" />
+    <ClCompile Include="Orc.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Potion.cpp" />
     <ClCompile Include="RewardItem.cpp" />
@@ -137,10 +139,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Archer.h" />
+    <ClInclude Include="Goblin.h" />
     <ClInclude Include="Inventory.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="Magician.h" />
     <ClInclude Include="Monster.h" />
+    <ClInclude Include="Orc.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Potion.h" />
     <ClInclude Include="RewardItem.h" />
