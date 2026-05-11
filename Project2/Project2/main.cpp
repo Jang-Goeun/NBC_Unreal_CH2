@@ -655,8 +655,9 @@ int main()
         cout << "=== Main Menu ===" << endl;
         cout << "1. Enter Dungeon" << endl;
         cout << "2. Check Inventory" << endl;
-        cout << "3. AlchemyWorkshop" << endl;
-        cout << "4. UpgradeCharacter" << endl;
+        cout << "3. Sort Inventory" << endl;
+        cout << "4. AlchemyWorkshop" << endl;
+        cout << "5. UpgradeCharacter" << endl;
         cout << "0. Quit" << endl << endl;
 
         cout << "Choice: ";
@@ -692,14 +693,21 @@ int main()
                 clearScreen();
                 break;
             }
-            // 포션 제작소
+            // 인벤토리 정렬
             case 3:
+            {
+                playerInventory.SortItems();
+                clearScreen();
+                break;
+            }
+            // 포션 제작소
+            case 4:
             {
                 showAlchemyWorkshop();
                 break;
             }
             // 스탯 업그레이드
-            case 4:
+            case 5:
             {
                 Item* hpPotion = playerInventory.GetItem(playerInventory.FindItem("HP Potion"));
                 Item* mpPotion = playerInventory.GetItem(playerInventory.FindItem("MP Potion"));

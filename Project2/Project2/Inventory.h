@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include <algorithm>
 #include <iostream>
 #include <string>
 
@@ -63,6 +64,11 @@ public:
      * @brief 인벤토리 내의 모든 아이템 정보를 출력
      */
     void PrintAllItems();
+
+    /**
+    * @brief 인벤토리 정렬 메서드
+    */
+    void SortItems();
 
     /**
     *  @brief 현재 인벤토리에 담긴 모든 아이템의 총 수량을 계산하여 업데이트
@@ -191,6 +197,29 @@ template <typename T>
 void Inventory<T>::PrintAllItems()
 {
     std::cout << "[ Inventory (" << totalCount_ << "/" << capacity_ << ") ]" << std::endl;
+    for (int i = 1; i <= size_; ++i)
+    {
+        std::cout << i << ". ";
+        pItems_[i - 1]->printInfo();
+    }
+}
+
+template <typename T>
+void Inventory<T>::SortItems()
+{
+    if (size_ <= 1) return;
+
+    // 1차로 가격순, 2차로 이름 순으로 정렬
+    std::sort(pItems_, pItems_ + size_, [](const T& a, const T& b)
+        {
+            if (a->getPrice() != b->getPrice())
+            {
+                return a->getPrice() < b->getPrice();
+            }
+            return a->getName() < b->getName();
+    });
+
+    std::cout << "\n[ Inventory sorted by price ]" << std::endl;
     for (int i = 1; i <= size_; ++i)
     {
         std::cout << i << ". ";
