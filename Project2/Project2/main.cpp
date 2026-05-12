@@ -352,7 +352,7 @@ void craftingPotion(string potionName)
 }
 
 /*
- * @brief potionStock 메서드
+ * @brief potionStock 공용 포션 저장/반환 메서드
  */
 void potionStockFunc()
 {
