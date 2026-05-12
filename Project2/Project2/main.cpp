@@ -1,6 +1,7 @@
 ﻿#include <iostream>
 #include <algorithm>
 #include <string>
+#include <map>
 #include <vector>
 #include <memory>
 #include <conio.h>
@@ -48,6 +49,7 @@ struct PotionRecipe
 // 전역 변수 선언
 Inventory<Item*> playerInventory(30);
 vector<PotionRecipe> potionRecipe;      // 포션 레시피
+map<string, int> potionStock_;
 vector<Monster*> slimeCastle;
 vector<Monster*> goblinCastle;
 vector<Monster*> orcCastle;
@@ -172,6 +174,7 @@ bool handleItemMenu(Player* player)
                 delete selectedItem;
                 playerInventory.RemoveItem(index);
             }
+            addItem("Empty Potion Bottle", "0", 0, 0, 1, true);
             playerInventory.UpdateTotalCount();
             return true;
         }
@@ -349,6 +352,101 @@ void craftingPotion(string potionName)
 }
 
 /*
+ * @brief potionStock 메서드
+ */
+void potionStockFunc()
+{
+    int choice;
+    bool isValidSelection = false;
+
+    do
+    {
+        cout << "=== Potion Stock ===" << endl;
+        cout << "1. Dispense HP Potion (Stock: " << potionStock_["HP Potion"] << ")" << endl;
+        cout << "2. Return empty bottle" << endl;
+        cout << "0. Go back\n" << endl;
+        cout << "Choice: ";
+        if (!(cin >> choice))
+        {
+            cin.clear();
+            cin.ignore(1000, '\n');
+            choice = -1;
+        }
+        cout << endl;
+
+        switch (choice)
+        {
+            // 되돌아가기
+            case 0:
+            {
+                isValidSelection = true;
+                break;
+            }
+            // HP 포션 지급
+            case 1:
+            {
+                if (potionStock_["HP Potion"] > 0)
+                {
+                    cout << "-> Dispense HP Potion  (stock: " << --potionStock_["HP Potion"] << ")" << endl;
+                    addItem("HP Potion", "HP", 50, 50, 1, true);
+                }
+                else
+                {
+                    cout << "-> Dispense failed: out of stock!" << endl;
+                }
+                clearScreen();
+                break;
+            }
+            // 공병 반납
+            case 2:
+            {
+                int bottleIndex = playerInventory.FindItem("Empty Potion Bottle");
+                if (bottleIndex != -1)
+                {
+                    Item* bottle = playerInventory.GetItem(bottleIndex);
+                    if (bottle != nullptr)
+                    {
+                        bottle->setCount(bottle->getCount() - 1);
+
+                        // potionStock_에는 최대 3개의 포션이 저장될 수 있음
+                        if (potionStock_["HP Potion"] >= 3)
+                        {
+                            cout << "-> Since there are 3 potions in the potion stock, only empty bottles will be returned." << endl;
+                        }
+                        else
+                        {
+                            potionStock_["HP Potion"]++;
+                        }
+
+                        cout << "-> Return empty bottle  (HP Potion Stock: " << potionStock_["HP Potion"] << ")" << endl;
+                        if (bottle->getCount() <= 0)
+                        {
+                            delete bottle;
+                            playerInventory.RemoveItem(bottleIndex);
+                        }
+                        playerInventory.UpdateTotalCount();
+                    }
+                }
+                else
+                {
+                    cout << "-> You don't have any empty bottles to return." << endl;
+                }
+                clearScreen();
+                break;
+            }
+            // 이외의 숫자 선택
+            default:
+            {
+                cout << "Invalid choice. Please select again!" << endl;
+                clearScreen();
+                break;
+            }
+        }
+
+    } while (!isValidSelection);
+}
+
+/*
  * @brief 포션 제작소 메서드
  */
 void showAlchemyWorkshop()
@@ -366,6 +464,7 @@ void showAlchemyWorkshop()
         cout << "2. Search by potion name" << endl;
         cout << "3. Search by ingredient" << endl;
         cout << "4. Crafting a Potion" << endl;
+        cout << "5. Potion Stock" << endl;
         cout << "0. Go back\n" << endl;
         cout << "Choice: ";
         if (!(cin >> shopChoice))
@@ -415,6 +514,14 @@ void showAlchemyWorkshop()
                 cout << "Potion name to create: ";
                 getline(cin >> ws, keyword);
                 craftingPotion(keyword);
+                clearScreen();
+                break;
+            }
+            // 포션 보관함
+            case 5:
+            {
+                clearScreen();
+                potionStockFunc();
                 clearScreen();
                 break;
             }
@@ -693,12 +800,17 @@ void enterDungeon(Player* player)
 }
 
 /*
- * @brief 기본 포션&레시피 추가
+ * @brief 기본 데이터 추가
+ * 포션 레시피(HP, MP)
+ * 포션 상점 재고(HP Potion, MP Potion)
+ * 인벤토리(HP, MP, Herb, Berry, Clear Water)
  */
 void initDefaultData()
 {
     potionRecipe.push_back({ "HP Potion", {{"Herb", 1}, {"Clear Water", 1}} });
     potionRecipe.push_back({ "MP Potion", {{"Herb", 1}, {"Berry", 1}} });
+    potionStock_["HP Potion"] = 3;
+    potionStock_["MP Potion"] = 3;
     addItem("HP Potion", "HP", 50, 50, 5, true);
     addItem("MP Potion", "MP", 50, 50, 5, true);
     addItem("Herb", "0", 0, 20, 1, false);
@@ -925,6 +1037,7 @@ int main()
                         delete item;
                         playerInventory.RemoveItem(currentHpIdx);
                     }
+
                 }
 
                 int currentMpIdx = playerInventory.FindItem("MP Potion");

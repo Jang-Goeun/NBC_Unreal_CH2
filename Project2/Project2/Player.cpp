@@ -5,6 +5,8 @@
 #include <algorithm>
 #include <conio.h>
 
+extern void addItem(std::string name, std::string effectName, int effectValue, int price, int count, bool isPotion);
+
 using namespace std;
 
 /*
@@ -85,6 +87,7 @@ void Player::upgradeCharacter(Item* hpPotion, Item* mpPotion)
                     cout << "* HP increased by " << hpPotion->getEffectValue() << ". (HP Potion used: " << --hpPotionCount << " left)." << endl;
                     hpPotion->setCount(hpPotionCount);
                     hp = min(hp + hpPotion->getEffectValue(), maxHp);
+                    addItem("Empty Potion Bottle", "0", 0, 0, 1, true);
                 }
                 break;
             }
